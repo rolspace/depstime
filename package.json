@@ -1,0 +1,26 @@
+{
+  "name": "depstime",
+  "version": "0.1.0",
+  "description": "Command line utility to get info about the age of your dependencies",
+  "bin": {
+    "depstime": "bin/depstime"
+  },
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "babel src/ -d dist/",
+    "test": "mocha --compilers js:babel-core/register ./tests/*-test.js"
+  },
+  "author": "Rolando Ramos",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.24.1",
+    "chai": "^4.1.1",
+    "mocha": "^3.5.0",
+    "sinon": "^3.1.0"
+  },
+  "dependencies": {
+    "minimist": "^1.2.0"
+  }
+}

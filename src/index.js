@@ -1,22 +1,29 @@
 import fs from 'fs'
 import path from 'path'
+import jsonfile from 'jsonfile'
 import { Console } from 'console'
 
 export default function depstime(directory, options) {
-	const logWriter = new Console(process.stdout, process.stderr)
+	const logger = new Console(process.stdout, process.stderr)
 
 	if (fs.existsSync(directory)) {
-		const packakeJsonPath = path.join(directory, 'package.json')
-		fs.open(packakeJsonPath, 'r', (error, fd) => {
+		const packageJsonPath = path.join(directory, 'package.json')
+		
+		jsonfile.readFile(packageJsonPath, (error, obj) => {
 			if (error) {
-				logWriter.error(`Path ${directory} does not have a package.json file`)
+				logger.error(`Path ${directory} does not have a package.json file.`)
+				return false
 			}
-			else {
-				console.log(fd)
+
+			if (!obj.hasOwnProperty('dependencies')) {
+				logger.info('There are no dependencies in the package.json file.')
+				return false
 			}
+
+			return true
 		})
 	}
-	else {
-		logWriter.error(`Path ${directory} does not exist`)
-	}
+
+	logger.error(`Path ${directory} does not exist.`)
+	return false
 }

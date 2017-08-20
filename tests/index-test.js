@@ -1,37 +1,59 @@
 import fs from 'fs'
 import path from 'path'
+import jsonfile from 'jsonfile'
 import { Console } from 'console'
 import { expect } from 'chai';
 import sinon from 'sinon';
 import depstime from '../dist/index'
 
 describe('depstime', () => {
-	it('Outputs an error message if the path parameter does not exist', () => {
-		const fsStub = sinon.stub(fs, 'existsSync').returns(false)
-		const logWriterSpy = sinon.stub(Console.prototype, 'error').callsFake(() => { })
+	let loggerInfoStub, loggerErrorStub
 
-		depstime('/path/that/does/not/exist', null)
+	beforeEach(() => {
+			loggerInfoStub = sinon.stub(Console.prototype, 'info').callsFake(() => { })
+			loggerErrorStub = sinon.stub(Console.prototype, 'error').callsFake(() => { })
+		})
 
-		fsStub.restore()
-		logWriterSpy.restore()
-
-		expect(logWriterSpy.calledOnce).to.equal(true)
+	afterEach(() => {
+		loggerInfoStub.restore()
+		loggerErrorStub.restore()
 	})
 
-	it('Outputs an error message if the path does not contain a package.json file', () => {
-		const fsExistsStub = sinon.stub(fs, 'existsSync').returns(true)
-		const fsOpenStub = sinon.stub(fs, 'open').yields('error', null)
+	it('Returns false if the path parameter does not exist', () => {
+		const fsStub = sinon.stub(fs, 'existsSync').returns(false)
+
+		const result = depstime('/path/that/does/not/exist', null)
+
+		fsStub.restore()
+
+		expect(result).to.equal(false)
+	})
+
+	it('Returns false if the path does not contain a package.json file', () => {
+		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
 		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
+		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields('error', null)
 
-		const logWriterSpy = sinon.stub(Console.prototype, 'error').callsFake(() => { })
+		const result = depstime('/path/that/does/exist', null)
 
-		depstime('/path/that/does/exist', null)
-
-		fsExistsStub.restore()
-		fsOpenStub.restore()
+		fsStub.restore()
 		pathStub.restore()
-		logWriterSpy.restore()
+		jsonfileStub.restore()
 
-		expect(logWriterSpy.calledOnce).to.equal(true)
+		expect(result).to.equal(false)
+	})
+
+	it('Returns false if the package.json file does not have dependencies', () => {
+		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
+		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
+		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, { a: 1 })
+
+		const result = depstime('/path/that/does/exist', null)
+
+		fsStub.restore()
+		pathStub.restore()
+		jsonfileStub.restore()
+
+		expect(result).to.equal(false)
 	})
 })

@@ -46,7 +46,7 @@ describe('depstime', () => {
 	it('Returns false if the package.json file does not have dependencies', () => {
 		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
 		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
-		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, { a: 1 })
+		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, { "name": "depstime"  })
 
 		const result = depstime('/path/that/does/exist', null)
 

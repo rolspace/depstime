@@ -19,41 +19,62 @@ describe('depstime', () => {
 		loggerErrorStub.restore()
 	})
 
-	it('Returns false if the path parameter does not exist', () => {
+	it('Callback called with false argument if the path does not exist', () => {
+		const cb = sinon.spy()
 		const fsStub = sinon.stub(fs, 'existsSync').returns(false)
 
-		const result = depstime('/path/that/does/not/exist', null)
+		depstime('/path/that/does/not/exist', cb)
 
 		fsStub.restore()
 
-		expect(result).to.equal(false)
+		expect(cb.calledWith(false)).to.equal(true)
 	})
 
-	it('Returns false if the path does not contain a package.json file', () => {
+	it('Callback called with false argument if the path does not contain a package.json file', () => {
+		const cb = sinon.spy()
+
 		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
 		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
 		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields('error', null)
 
-		const result = depstime('/path/that/does/exist', null)
+		const result = depstime('/path/that/does/exist', cb)
 
 		fsStub.restore()
 		pathStub.restore()
 		jsonfileStub.restore()
 
-		expect(result).to.equal(false)
+		expect(cb.calledWith(false)).to.equal(true)
 	})
 
-	it('Returns false if the package.json file does not have dependencies', () => {
+	it('Callback called with false argument if the package.json file does not have dependencies', () => {
+		const cb = sinon.spy()
+
 		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
 		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
-		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, { "name": "depstime"  })
+		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, { name: 'depstime'  })
 
-		const result = depstime('/path/that/does/exist', null)
+		depstime('/path/that/does/exist', cb)
 
 		fsStub.restore()
 		pathStub.restore()
 		jsonfileStub.restore()
 
-		expect(result).to.equal(false)
+		expect(cb.calledWith(false)).to.equal(true)
+	})
+
+	it('Returns an object with each dependency as an object, dependencies are ordered alphabetically', () => {
+		const cb = sinon.spy();
+
+		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
+		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
+		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, { name: 'depstime', dependencies: { dep: '^1.2.1' } })
+
+		const result = depstime('/path/that/does/exist', cb)
+
+		fsStub.restore()
+		pathStub.restore()
+		jsonfileStub.restore()
+
+		expect(cb.calledWith(false)).to.equal(true)
 	})
 })

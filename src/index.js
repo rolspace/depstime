@@ -10,13 +10,13 @@ export default function depstime(directory) {
 		if (fs.existsSync(directory)) {
 			const packageJsonPath = path.join(directory, 'package.json')
 
-			jsonfile.readFile(packageJsonPath, (error, obj) => {
+			jsonfile.readFile(packageJsonPath, (error, packageObj) => {
 				if (error) {
 					logger.error(`Path ${directory} does not have a package.json file.`)
 					reject(false)
 				}
 				else {
-					if (!obj.hasOwnProperty('dependencies') && !obj.hasOwnProperty('devDependencies')) {
+					if (!packageObj.hasOwnProperty('dependencies') && !packageObj.hasOwnProperty('devDependencies')) {
 						logger.info('There are no dependencies in the package.json file.')
 						reject(false)
 					}

@@ -21,7 +21,9 @@ export default function depstime(directory) {
 						reject(false)
 					}
 
-					resolve(true)
+					let dependencies = parseDependencies(packageObj)
+
+					resolve(dependencies)
 				}
 			})
 		}
@@ -29,4 +31,25 @@ export default function depstime(directory) {
 		logger.error(`Path ${directory} does not exist.`)
 		reject(false)
 	})
+}
+
+function parseDependencies(packageObj) {
+	const parser = (obj) => {
+		let result = {}
+		for (const key in obj) {
+			if (obj.hasOwnProperty(key)) {
+				result[key] = { version: obj[key] }
+			}
+		}
+		return result
+	}
+
+	let parsed = Object.assign({}, parser(packageObj.dependencies), parser(packageObj.devDependencies))
+	let ordered = {}
+
+	Object.keys(parsed).sort().forEach(key => {
+		ordered[key] = parsed[key]
+	})
+
+	return ordered
 }

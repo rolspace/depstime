@@ -65,10 +65,10 @@ describe('depstime', () => {
 		const packageJson = {
 			name: 'depstime',
 			dependencies: {
-				dep1: '^1.2.1'
+				b: '^1.2.1'
 			},
 			devDependencies: {
-				version: '3.0.0'
+				a: '3.0.0'
 			}
 		}
 
@@ -77,11 +77,11 @@ describe('depstime', () => {
 		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, packageJson)
 
 		const expected = {
-			dep: {
-				version: '^1.2.1'
-			},
-			devDep: {
+			a: {
 				version: '3.0.0'
+			},
+			b: {
+				version: '^1.2.1'
 			}
 		}
 
@@ -92,5 +92,41 @@ describe('depstime', () => {
 		jsonfileStub.restore()
 
 		return expect(result).to.be.fulfilled.and.to.eventually.deep.equal(expected)
+	})
+
+	it('is resolved with an object containing the ordered dependencies as keys', () => {
+		const packageJson = {
+			name: 'depstime',
+			dependencies: {
+				b: '^1.2.1'
+			},
+			devDependencies: {
+				a: '3.0.0'
+			}
+		}
+
+		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
+		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
+		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, packageJson)
+
+		const expected = {
+			a: {
+				version: '3.0.0'
+			},
+			b: {
+				version: '^1.2.1'
+			}
+		}
+
+		const result = depstime('/path/that/does/exist')
+
+		fsStub.restore()
+		pathStub.restore()
+		jsonfileStub.restore()
+
+		return Promise.resolve(result)
+			.then(value => {
+				expect(Object.keys(value)).to.have.ordered.members(Object.keys(expected))
+			})
 	})
 })

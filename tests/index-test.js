@@ -23,7 +23,7 @@ describe('depstime', () => {
 		loggerErrorStub.restore()
 	})
 
-	it('Callback called with false argument if the path does not exist', () => {
+	it('is rejected if the path does not exist', () => {
 		const fsStub = sinon.stub(fs, 'existsSync').returns(false)
 
 		const result = depstime('/path/that/does/not/exist')
@@ -33,7 +33,7 @@ describe('depstime', () => {
 		return expect(result).to.be.rejected.and.to.eventually.equal(false)
 	})
 
-	it('Callback called with false argument if the path does not contain a package.json file', () => {
+	it('is rejected if the path does not contain a package.json file', () => {
 		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
 		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
 		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields('error', null)
@@ -47,7 +47,7 @@ describe('depstime', () => {
 		return expect(result).to.be.rejected.and.to.eventually.equal(false)
 	})
 
-	it('Callback called with false argument if the package.json file does not have dependencies', () => {
+	it('is rejected if the package.json file does not have dependencies', () => {
 		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
 		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
 		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, { name: 'depstime'  })
@@ -61,7 +61,7 @@ describe('depstime', () => {
 		return expect(result).to.be.rejected.and.to.eventually.equal(false)
 	})
 
-	it('Returns an object with each dependency as an object, dependencies are ordered alphabetically', () => {
+	it('is resolved with an object containing the dependencies as keys', () => {
 		const packageJson = {
 			name: 'depstime',
 			dependencies: {

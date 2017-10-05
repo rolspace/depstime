@@ -28,48 +28,9 @@ export default function depstime(directory) {
 					let promises = []
 
 					for (let i = 0; i < dependencies.length; i++) {
-						let temp = ''
-
-						const func = new Promise((resolve, reject) => {
-							const view = spawn('npm', [ 'view', dependencies[i].name, '--json' ])
-
-							view.stdout.on('data', (data) => {
-								temp += data.toString()
-							})
-
-							view.on('exit', (code) => {
-								const dependencyView = JSON.parse(temp)
-
-								const packageVersion = dependencies[i].local.version
-								const localVersion = semver.minSatisfying(dependencyView.versions, packageVersion)
-								const wantedVersion = semver.maxSatisfying(dependencyView.versions, packageVersion)
-								const latestVersion = dependencyView.version
-
-								const localDate = dependencyView.time[localVersion]
-								const wantedDate = dependencyView.time[wantedVersion]
-								const latestDate = dependencyView.time[latestVersion]
-
-								const wantedTimeDiff = localDate === wantedDate ? 0 : moment(wantedDate).valueOf() - moment(localDate).valueOf()
-								const latestTimeDiff = localDate === latestDate ? 0 :  moment(latestDate).valueOf() - moment(localDate).valueOf()
-
-								dependencies[i].wanted = {
-									version: wantedVersion,
-									time_diff: wantedTimeDiff
-								}
-
-								dependencies[i].latest = {
-									version: latestVersion,
-									time_diff: latestTimeDiff
-								}
-
-								resolve(dependencies[i])
-							})
-						})
-
-						promises.push(func)
+						const dependency = processDependencies(dependencies[i])
+						promises.push(dependency)
 					}
-
-					let deps = []
 
 					Promise.all(promises)
 					.then(values => {
@@ -103,4 +64,44 @@ function parseDependencies(packageObj) {
 
 	const parsed = parser(packageObj.dependencies).concat(parser(packageObj.devDependencies))
 	return parsed
+}
+
+function processDependencies(dependency) {
+	return new Promise((resolve, reject) => {
+		let temp = ''
+
+		const view = spawn('npm', [ 'view', dependency.name, '--json' ])
+
+		view.stdout.on('data', (data) => {
+			temp += data.toString()
+		})
+
+		view.on('exit', (code) => {
+			const dependencyView = JSON.parse(temp)
+
+			const packageVersion = dependency.local.version
+			const localVersion = semver.minSatisfying(dependencyView.versions, packageVersion)
+			const wantedVersion = semver.maxSatisfying(dependencyView.versions, packageVersion)
+			const latestVersion = dependencyView.version
+
+			const localDate = dependencyView.time[localVersion]
+			const wantedDate = dependencyView.time[wantedVersion]
+			const latestDate = dependencyView.time[latestVersion]
+
+			const wantedTimeDiff = localDate === wantedDate ? 0 : moment(wantedDate).valueOf() - moment(localDate).valueOf()
+			const latestTimeDiff = localDate === latestDate ? 0 :  moment(latestDate).valueOf() - moment(localDate).valueOf()
+
+			dependency.wanted = {
+				version: wantedVersion,
+				time_diff: wantedTimeDiff
+			}
+
+			dependency.latest = {
+				version: latestVersion,
+				time_diff: latestTimeDiff
+			}
+
+			resolve(dependency)
+		})
+	})
 }

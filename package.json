@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "jsonfile": "^3.0.1",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "moment": "^2.18.1",
+    "semver": "^5.4.1"
   }
 }

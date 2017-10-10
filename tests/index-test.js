@@ -51,7 +51,7 @@ describe('depstime', () => {
 		return expect(result).to.be.rejected
 	})
 
-	it('is resolved with an object containing the dependencies as keys', () => {
+	it('is resolved with an object containing the dependency time data as an array', () => {
 		const packageJson = {
 			name: 'depstime',
 			dependencies: {

@@ -15,13 +15,11 @@ export default function depstime(directory) {
 
 			jsonfile.readFile(packageJsonPath, (error, packageObj) => {
 				if (error) {
-					logger.error(`Path ${directory} does not have a package.json file.`)
-					reject(false)
+					reject(`Path ${directory} does not have a package.json file.`)
 				}
 				else {
 					if (!packageObj.hasOwnProperty('dependencies') && !packageObj.hasOwnProperty('devDependencies')) {
-						logger.info('There are no dependencies in the package.json file.')
-						reject(false)
+						reject('There are no dependencies in the package.json file.')
 					}
 
 					let dependencies = parseDependencies(packageObj)
@@ -40,8 +38,7 @@ export default function depstime(directory) {
 			})
 		}
 		else {
-			logger.error(`Path ${directory} does not exist.`)
-			reject(false)
+			reject(`Path ${directory} does not exist.`)
 		}
 	})
 }

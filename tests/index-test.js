@@ -32,7 +32,7 @@ describe('depstime', () => {
 
 		fsStub.restore()
 
-		return expect(result).to.be.rejected.and.to.eventually.equal(false)
+		return expect(result).to.be.rejected
 	})
 
 	it('is rejected if the path does not contain a package.json file', () => {
@@ -46,7 +46,7 @@ describe('depstime', () => {
 		pathStub.restore()
 		jsonfileStub.restore()
 
-		return expect(result).to.be.rejected.and.to.eventually.equal(false)
+		return expect(result).to.be.rejected
 	})
 
 	it('is rejected if the package.json file does not have dependencies', () => {
@@ -60,7 +60,7 @@ describe('depstime', () => {
 		pathStub.restore()
 		jsonfileStub.restore()
 
-		return expect(result).to.be.rejected.and.to.eventually.equal(false)
+		return expect(result).to.be.rejected
 	})
 
 	it('is resolved with an object containing the dependencies as keys', () => {

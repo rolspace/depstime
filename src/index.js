@@ -7,6 +7,10 @@ import { spawn } from 'child_process'
 
 export default function depstime(directory) {
 	return new Promise((resolve, reject) => {
+		if (!directory) {
+			directory = process.cwd()
+		}
+
 		if (fs.existsSync(directory)) {
 			const packageJsonPath = path.join(directory, 'package.json')
 

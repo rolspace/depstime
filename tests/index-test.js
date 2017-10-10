@@ -37,6 +37,20 @@ describe('depstime', () => {
 		return expect(result).to.be.rejected
 	})
 
+	it('is rejected if the path does not contain a package.json file, even if the directory parameter is not provided', () => {
+		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
+		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
+		const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields('error', null)
+
+		const result = depstime()
+
+		fsStub.restore()
+		pathStub.restore()
+		jsonfileStub.restore()
+
+		return expect(result).to.be.rejected
+	})
+
 	it('is rejected if the package.json file does not have dependencies', () => {
 		const fsStub = sinon.stub(fs, 'existsSync').returns(true)
 		const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')

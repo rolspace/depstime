@@ -13,18 +13,6 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 
 describe('depstime', () => {
-	let loggerInfoStub, loggerErrorStub
-
-	beforeEach(() => {
-			loggerInfoStub = sinon.stub(Console.prototype, 'info').callsFake(() => { })
-			loggerErrorStub = sinon.stub(Console.prototype, 'error').callsFake(() => { })
-		})
-
-	afterEach(() => {
-		loggerInfoStub.restore()
-		loggerErrorStub.restore()
-	})
-
 	it('is rejected if the path does not exist', () => {
 		const fsStub = sinon.stub(fs, 'existsSync').returns(false)
 

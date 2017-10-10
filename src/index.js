@@ -4,12 +4,9 @@ import jsonfile from 'jsonfile'
 import semver from 'semver'
 import moment from 'moment'
 import { spawn } from 'child_process'
-import { Console } from 'console'
 
 export default function depstime(directory) {
 	return new Promise((resolve, reject) => {
-		const logger = new Console(process.stdout, process.stderr)
-
 		if (fs.existsSync(directory)) {
 			const packageJsonPath = path.join(directory, 'package.json')
 

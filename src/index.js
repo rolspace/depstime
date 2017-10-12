@@ -50,7 +50,7 @@ function parseDependencies(packageObj) {
 		for (const key in obj) {
 			if (obj.hasOwnProperty(key)) {
 				result.push({
-					name: key,
+					package: key,
 					local: {
 						version: obj[key]
 					}
@@ -68,7 +68,7 @@ function processDependencies(dependency) {
 	return new Promise((resolve, reject) => {
 		let temp = ''
 
-		const view = spawn('npm', [ 'view', dependency.name, '--json' ])
+		const view = spawn('npm', [ 'view', dependency.package, '--json' ])
 
 		view.stdout.on('data', (data) => {
 			temp += data.toString()

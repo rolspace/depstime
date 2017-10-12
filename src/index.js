@@ -74,7 +74,7 @@ function processDependencies(dependency) {
 			temp += data.toString()
 		})
 
-		view.on('exit', (code) => {
+		view.on('close', (code) => {
 			const dependencyView = JSON.parse(temp)
 
 			const packageVersion = dependency.local.version

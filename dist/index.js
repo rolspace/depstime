@@ -95,7 +95,7 @@ function processDependencies(dependency) {
 			temp += data.toString();
 		});
 
-		view.on('exit', function (code) {
+		view.on('close', function (code) {
 			var dependencyView = JSON.parse(temp);
 
 			var packageVersion = dependency.local.version;

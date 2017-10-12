@@ -3,7 +3,6 @@ import path from 'path'
 import jsonfile from 'jsonfile'
 import child_process from 'child_process'
 import mockSpawn from 'mock-spawn'
-import { Console } from 'console'
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon';
@@ -65,7 +64,7 @@ describe('depstime', () => {
 		return expect(result).to.be.rejected
 	})
 
-	it('is resolved with an object containing the dependency time data as an array', () => {
+	it('is resolved with an object containing the dependency data as an array', () => {
 		const packageJson = {
 			name: 'depstime',
 			dependencies: {
@@ -77,7 +76,7 @@ describe('depstime', () => {
 		}
 
 		const expected = { 'dependencies': [{
-      name: 'b',
+      package: 'b',
 			local: {
         version: '^1.2.1'
       },
@@ -91,7 +90,7 @@ describe('depstime', () => {
 			}
 		},
 		{
-      name: 'a',
+      package: 'a',
 			local: {
         version: '3.0.0'
       },

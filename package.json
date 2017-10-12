@@ -1,7 +1,7 @@
 {
   "name": "depstime",
   "version": "0.1.0",
-  "description": "Command line utility to get the time differences between a locally installed package, the wanted version, and the latest version.",
+  "description": "Tool to get the time difference between the locally installed version of a package, the wanted version, and the latest version.",
   "bin": {
     "depstime": "bin/depstime"
   },

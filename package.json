@@ -2,6 +2,10 @@
   "name": "depstime",
   "version": "0.1.0",
   "description": "Tool to get the time difference between the locally installed version of a package, the wanted version, and the latest version.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rolspace/depstime"
+  },
   "bin": {
     "depstime": "bin/depstime"
   },

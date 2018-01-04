@@ -3,9 +3,10 @@ import path from 'path'
 import jsonfile from 'jsonfile'
 import semver from 'semver'
 import moment from 'moment'
+import humanize from 'humanize-duration'
 import { spawn } from 'child_process'
 
-export default function depstime(directory) {
+export default function depstime(directory, options) {
 	return new Promise((resolve, reject) => {
 		if (!directory) {
 			directory = process.cwd()
@@ -27,7 +28,7 @@ export default function depstime(directory) {
 					let promises = []
 
 					for (let i = 0; i < dependencies.length; i++) {
-						const dependency = processDependencies(dependencies[i])
+						const dependency = processDependencies(dependencies[i], options)
 						promises.push(dependency)
 					}
 
@@ -64,7 +65,7 @@ function parseDependencies(packageObj) {
 	return parsed
 }
 
-function processDependencies(dependency) {
+function processDependencies(dependency, options) {
 	return new Promise((resolve, reject) => {
 		let temp = ''
 
@@ -91,15 +92,22 @@ function processDependencies(dependency) {
 
 			dependency.wanted = {
 				version: wantedVersion,
-				time_diff: wantedTimeDiff
+				time_diff: transform(wantedTimeDiff, options)
 			}
 
 			dependency.latest = {
 				version: latestVersion,
-				time_diff: latestTimeDiff
+				time_diff: transform(latestTimeDiff, options)
 			}
 
 			resolve(dependency)
 		})
 	})
+}
+
+function transform(value, options) {
+	if (options && options.h)
+		return humanize(value)
+
+	return value
 }

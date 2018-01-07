@@ -107,7 +107,7 @@ function processDependencies(dependency, options) {
 
 function transform(value, options) {
 	if (options && options.h)
-		return humanize(value)
+		return humanize(value, { round: true })
 
 	return value
 }

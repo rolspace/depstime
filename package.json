@@ -1,6 +1,6 @@
 {
   "name": "depstime",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Tool to get the time difference between the locally installed version of a package, the wanted version, and the latest version.",
   "repository": {
     "type": "git",

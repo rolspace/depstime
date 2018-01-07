@@ -25,11 +25,15 @@ var _moment = require('moment');
 
 var _moment2 = _interopRequireDefault(_moment);
 
+var _humanizeDuration = require('humanize-duration');
+
+var _humanizeDuration2 = _interopRequireDefault(_humanizeDuration);
+
 var _child_process = require('child_process');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function depstime(directory) {
+function depstime(directory, options) {
 	return new Promise(function (resolve, reject) {
 		if (!directory) {
 			directory = process.cwd();
@@ -50,7 +54,7 @@ function depstime(directory) {
 					var promises = [];
 
 					for (var i = 0; i < dependencies.length; i++) {
-						var dependency = processDependencies(dependencies[i]);
+						var dependency = processDependencies(dependencies[i], options);
 						promises.push(dependency);
 					}
 
@@ -85,7 +89,7 @@ function parseDependencies(packageObj) {
 	return parsed;
 }
 
-function processDependencies(dependency) {
+function processDependencies(dependency, options) {
 	return new Promise(function (resolve, reject) {
 		var temp = '';
 
@@ -112,16 +116,22 @@ function processDependencies(dependency) {
 
 			dependency.wanted = {
 				version: wantedVersion,
-				time_diff: wantedTimeDiff
+				time_diff: transform(wantedTimeDiff, options)
 			};
 
 			dependency.latest = {
 				version: latestVersion,
-				time_diff: latestTimeDiff
+				time_diff: transform(latestTimeDiff, options)
 			};
 
 			resolve(dependency);
 		});
 	});
+}
+
+function transform(value, options) {
+	if (options && options.h) return (0, _humanizeDuration2.default)(value, { round: true });
+
+	return value;
 }
 module.exports = exports['default'];

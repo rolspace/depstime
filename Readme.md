@@ -19,7 +19,7 @@ npm install depstime --save
 ## Usage
 
 ```
-> depstime [directory]
+> depstime [directory] [options]
 ```
 
 The directory argument must refer to a location that contains a  package.json file. If the directory argument is empty, depstime will be executed in the context of the current directory.
@@ -60,6 +60,10 @@ depstime will return the following output:
 }
 ```
 
-The *time_diff* property specifies the time difference in milliseconds between the various versions of a package, as long as it is a package from the npm registry.
+The *time_diff* property specifies the time difference in milliseconds between the various versions of a package.
 
-Taking the time of the locally installed version (*local property*) as the initial time, the time difference is calculated between the max supported version (*wanted property*) and the latest version (*latest property*).
+The time difference is calculated by taking the publish time of the locally installed version from package.json (*local* property) and then, determining the time differences for the wanted version (*wanted*) and the latest version (*latest*) based on the versioning setup in package.json.
+
+## Options
+
+`--human, -h`: Converts the output of the time differences into a human readable string.

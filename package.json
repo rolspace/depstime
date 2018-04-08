@@ -17,13 +17,14 @@
   "main": "./dist/index.js",
   "scripts": {
     "build": "babel src/ -d dist/",
-    "test": "mocha --compilers js:babel-core/register ./tests/*-test.js"
+    "test": "mocha --compilers js:@babel/register ./tests/*-test.js"
   },
   "devDependencies": {
-    "babel-cli": "^6.24.1",
-    "babel-core": "^6.26.0",
+    "@babel/cli": "^7.0.0-beta.44",
+    "@babel/core": "^7.0.0-beta.44",
+    "@babel/preset-env": "^7.0.0-beta.44",
+    "@babel/register": "^7.0.0-beta.44",
     "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-preset-es2015": "^6.24.1",
     "chai": "^4.1.1",
     "chai-as-promised": "^7.1.1",
     "mocha": "^3.5.2",

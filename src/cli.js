@@ -6,9 +6,14 @@ import depstime from './index'
 export default function cli() {
 	const options = yargs
 		.usage('$0 [directory]')
-		.option('human', {
-      alias: 'h',
-      describe: 'Output time difference as a human readable value',
+		.option('human-compact', {
+      alias: 'c',
+      describe: 'Output time difference as a human readable value up to the \'days\' unit with rounding',
+      type: 'boolean'
+    })
+		.option('human-full', {
+      alias: 'f',
+      describe: 'Output time difference as a human readable value up to the \'seconds\' unit with rounding',
       type: 'boolean'
     })
 		.help('help', 'Show help message')

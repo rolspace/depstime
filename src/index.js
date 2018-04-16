@@ -106,8 +106,12 @@ function processDependencies(dependency, options) {
 }
 
 function transform(value, options) {
-	if (options && options.h)
+	if (options && options.c) {
+		return humanize(value, { round: true, units: ['y', 'mo', 'w', 'd'] })
+	}
+	else if (options && options.f) {
 		return humanize(value, { round: true })
+	}
 
 	return value
 }

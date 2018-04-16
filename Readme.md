@@ -10,7 +10,7 @@ As a command line tool:
 npm install -g depstime
 ```
 
-As a normal dependency:
+As a project dependency:
 
 ```
 npm install depstime --save
@@ -66,4 +66,6 @@ The time difference is calculated by taking the publish time of the locally inst
 
 ## Options
 
-`--human, -h`: Converts the output of the time differences into a human readable string.
+`--human-compact, -c`: Converts the output of the time differences into a human readable string. The string shows time difference values up to the 'days' unit with rounding.
+
+`--human-full, -f`: Converts the output of the time differences into a human readable string. The string shows the full time difference values up to the 'seconds' unit with rounding.

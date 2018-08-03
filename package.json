@@ -1,23 +1,23 @@
 {
   "name": "depstime",
   "version": "0.3.0",
-  "description": "Tool to get the time difference between the locally installed version of a package, the wanted version, and the latest version.",
   "author": "Rolando Ramos",
+  "description": "Displays the time differences between the locally installed version of a package, the wanted version on your package.json configuration, and the latest available version.",
   "license": "MIT",
+  "main": "./dist/index.js",
   "engines": {
     "node": ">=6.9.0"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/rolspace/depstime"
+  "scripts": {
+    "build": "babel src/ -d dist/",
+    "test": "mocha --compilers js:@babel/register ./tests/*.test.js"
   },
   "bin": {
     "depstime": "bin/depstime"
   },
-  "main": "./dist/index.js",
-  "scripts": {
-    "build": "babel src/ -d dist/",
-    "test": "mocha --compilers js:@babel/register ./tests/*-test.js"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rolspace/depstime"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.44",

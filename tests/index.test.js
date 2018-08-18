@@ -6,7 +6,7 @@ import mockSpawn from 'mock-spawn'
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon';
-import depstime from '../dist/index'
+import depstime from '../src/index'
 
 chai.use(chaiAsPromised)
 const expect = chai.expect

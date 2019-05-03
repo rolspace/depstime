@@ -1,10 +1,13 @@
+import util from 'util'
 import fs from 'fs'
 import path from 'path'
 import jsonfile from 'jsonfile'
 import semver from 'semver'
 import moment from 'moment'
 import humanize from 'humanize-duration'
-import { spawn } from 'child_process'
+import child from 'child_process'
+
+const exec = util.promisify(child.exec)
 
 export default function depstime(directory, options) {
   return new Promise((resolve, reject) => {
@@ -65,44 +68,38 @@ function parseDependencies(packageObj) {
   return parsed
 }
 
-function processDependencies(dependency, options) {
-  return new Promise((resolve, reject) => {
-    let temp = ''
+async function processDependencies(dependency, options) {
+  try {
+    const { stdout, stderr } = await exec(`npm view ${dependency.package} --json`)
+    const dependencyView = JSON.parse(stdout)
     
-    const view = spawn('npm', [ 'view', dependency.package, '--json' ])
+    const packageVersion = dependency.local.version
+    const localVersion = semver.minSatisfying(dependencyView.versions, packageVersion)
+    const wantedVersion = semver.maxSatisfying(dependencyView.versions, packageVersion)
+    const latestVersion = dependencyView.version
     
-    view.stdout.on('data', (data) => {
-      temp += data.toString()
-    })
+    const localDate = dependencyView.time[localVersion]
+    const wantedDate = dependencyView.time[wantedVersion]
+    const latestDate = dependencyView.time[latestVersion]
     
-    view.on('close', (code) => {
-      const dependencyView = JSON.parse(temp)
-      
-      const packageVersion = dependency.local.version
-      const localVersion = semver.minSatisfying(dependencyView.versions, packageVersion)
-      const wantedVersion = semver.maxSatisfying(dependencyView.versions, packageVersion)
-      const latestVersion = dependencyView.version
-      
-      const localDate = dependencyView.time[localVersion]
-      const wantedDate = dependencyView.time[wantedVersion]
-      const latestDate = dependencyView.time[latestVersion]
-      
-      const wantedTimeDiff = localDate === wantedDate ? 0 : moment(wantedDate).valueOf() - moment(localDate).valueOf()
-      const latestTimeDiff = localDate === latestDate ? 0 :  moment(latestDate).valueOf() - moment(localDate).valueOf()
-      
-      dependency.wanted = {
-        version: wantedVersion,
-        time_diff: transform(wantedTimeDiff, options)
-      }
-      
-      dependency.latest = {
-        version: latestVersion,
-        time_diff: transform(latestTimeDiff, options)
-      }
-      
-      resolve(dependency)
-    })
-  })
+    const wantedTimeDiff = localDate === wantedDate ? 0 : moment(wantedDate).valueOf() - moment(localDate).valueOf()
+    const latestTimeDiff = localDate === latestDate ? 0 :  moment(latestDate).valueOf() - moment(localDate).valueOf()
+
+    dependency.wanted = {
+      version: wantedVersion,
+      time_diff: transform(wantedTimeDiff, options)
+    }
+    
+    dependency.latest = {
+      version: latestVersion,
+      time_diff: transform(latestTimeDiff, options)
+    }
+
+    return dependency
+  }
+  catch (error) {
+    console.log(error)
+  }
 }
 
 function transform(value, options) {

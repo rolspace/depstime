@@ -1,6 +1,5 @@
 import util from 'util'
 import yargs from 'yargs'
-import minimist from 'minimist'
 import depstime from './index'
 
 export default function cli() {

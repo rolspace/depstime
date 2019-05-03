@@ -71,31 +71,34 @@ function parseDependencies(packageObj) {
 async function processDependencies(dependency, options) {
   try {
     const { stdout, stderr } = await exec(`npm view ${dependency.package} --json`)
-    const dependencyView = JSON.parse(stdout)
+    const viewData = JSON.parse(stdout)
     
-    const packageVersion = dependency.local.version
-    const localVersion = semver.minSatisfying(dependencyView.versions, packageVersion)
-    const wantedVersion = semver.maxSatisfying(dependencyView.versions, packageVersion)
-    const latestVersion = dependencyView.version
+    const { local: {version} } = dependency
+
+    const localVersion = semver.minSatisfying(viewData.versions, version)
+    const wantedVersion = semver.maxSatisfying(viewData.versions, version)
+    const latestVersion = viewData.version
     
-    const localDate = dependencyView.time[localVersion]
-    const wantedDate = dependencyView.time[wantedVersion]
-    const latestDate = dependencyView.time[latestVersion]
+    const localDate = viewData.time[localVersion]
+    const wantedDate = viewData.time[wantedVersion]
+    const latestDate = viewData.time[latestVersion]
     
     const wantedTimeDiff = localDate === wantedDate ? 0 : moment(wantedDate).valueOf() - moment(localDate).valueOf()
     const latestTimeDiff = localDate === latestDate ? 0 :  moment(latestDate).valueOf() - moment(localDate).valueOf()
 
-    dependency.wanted = {
+    const wanted = {
       version: wantedVersion,
       time_diff: transform(wantedTimeDiff, options)
     }
-    
-    dependency.latest = {
+
+    const latest =  {
       version: latestVersion,
       time_diff: transform(latestTimeDiff, options)
     }
 
-    return dependency
+    const processedDependency = {...dependency, wanted, latest }
+
+    return processedDependency
   }
   catch (error) {
     console.log(error)

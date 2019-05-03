@@ -2,7 +2,7 @@ import util from 'util'
 import yargs from 'yargs'
 import depstime from './index'
 
-export default function cli() {
+export default async function cli() {
 	const options = yargs
     .usage('$0 [directory]')
     .option('human-compact', {
@@ -17,8 +17,12 @@ export default function cli() {
     })
     .help('help', 'Show help message')
     .argv
-  
-  depstime(options._[0], options)
-    .then(value => console.log(util.inspect(value, { colors: true, depth: null })))
-    .catch(error => console.log(error))
+
+  try {
+    const result = await depstime(options._[0], options)
+    console.log(util.inspect(result, { colors: true, depth: null }))
+  }
+  catch (error) {
+    console.log(error)
+  }
 }

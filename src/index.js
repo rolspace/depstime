@@ -1,11 +1,11 @@
-import util from 'util'
-import fs from 'fs'
-import path from 'path'
-import jsonfile from 'jsonfile'
-import semver from 'semver'
-import moment from 'moment'
-import humanize from 'humanize-duration'
-import child from 'child_process'
+import child from 'child_process';
+import fs from 'fs';
+import humanize from 'humanize-duration';
+import jsonfile from 'jsonfile';
+import moment from 'moment';
+import path from 'path';
+import semver from 'semver';
+import util from 'util';
 
 const exec = util.promisify(child.exec)
 

@@ -1,6 +1,6 @@
-import util from 'util'
-import yargs from 'yargs'
-import depstime from './index'
+import util from 'util';
+import yargs from 'yargs';
+import depstime from './index';
 
 export default async function cli() {
 	const options = yargs

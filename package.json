@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "babel src/ -d dist/",
-    "test": "mocha --require @babel/register ./tests/*.test.js"
+    "test": "nyc --reporter=text mocha --require @babel/register ./tests/*.test.js"
   },
   "bin": {
     "depstime": "bin/depstime"
@@ -29,6 +29,7 @@
     "chai-as-promised": "^7.1.1",
     "mocha": "^6.1.4",
     "mock-spawn": "^0.2.6",
+    "nyc": "^14.1.0",
     "sinon": "^7.3.2"
   },
   "dependencies": {

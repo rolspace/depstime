@@ -1,8 +1,8 @@
-import child from 'child_process'
-import humanize from 'humanize-duration'
-import moment from 'moment'
-import semver from 'semver'
-import util from 'util'
+import child from 'child_process';
+import humanize from 'humanize-duration';
+import moment from 'moment';
+import semver from 'semver';
+import util from 'util';
 
 const exec = util.promisify(child.exec)
 

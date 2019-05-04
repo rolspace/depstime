@@ -5,12 +5,12 @@ import depstime from './index';
 export default async function cli() {
 	const options = yargs
     .usage('$0 [directory]')
-    .option('human-compact', {
+    .option('compact', {
       alias: 'c',
       describe: 'Output time difference as a human readable value up to the \'days\' unit with rounding',
       type: 'boolean'
     })
-    .option('human-full', {
+    .option('full', {
       alias: 'f',
       describe: 'Output time difference as a human readable value up to the \'seconds\' unit with rounding',
       type: 'boolean'

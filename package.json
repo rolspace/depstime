@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "babel src/ -d dist/",
-    "test": "mocha --compilers js:@babel/register ./tests/*.test.js"
+    "test": "mocha --require @babel/register ./tests/*.test.js"
   },
   "bin": {
     "depstime": "bin/depstime"

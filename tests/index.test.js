@@ -1,82 +1,94 @@
-import fs from 'fs'
-import path from 'path'
-import jsonfile from 'jsonfile'
-import child_process from 'child_process'
-import mockSpawn from 'mock-spawn'
 import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised'
+import chaiAsPromised from 'chai-as-promised';
+import jsonfile from 'jsonfile';
 import sinon from 'sinon';
-import depstime from '../src/index'
+import depstime from '../src/index';
+import * as utils from '../src/utils';
 
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
 describe('depstime', () => {
-  it('is rejected if the path does not exist', () => {
-    const fsStub = sinon.stub(fs, 'existsSync').returns(false)
-    
-    const result = depstime('/path/that/does/not/exist')
-    
-    fsStub.restore()
-    
-    return expect(result).to.be.rejected
-  })
-  
-  it('is rejected if the path does not contain a package.json file', () => {
-    const fsStub = sinon.stub(fs, 'existsSync').returns(true)
-    const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
-    const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields('error', null)
-    
-    const result = depstime('/path/that/does/exist')
-    
-    fsStub.restore()
-    pathStub.restore()
-    jsonfileStub.restore()
-    
-    return expect(result).to.be.rejected
-  })
-  
-  it('is rejected if the path does not contain a package.json file, even if the directory parameter is not provided', () => {
-    const fsStub = sinon.stub(fs, 'existsSync').returns(true)
-    const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
-    const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields('error', null)
+  it('No such file or directory, should throw error', () => {
+    const jsonfileStub = sinon.stub(jsonfile, 'readFile').rejects()
     
     const result = depstime()
     
-    fsStub.restore()
-    pathStub.restore()
     jsonfileStub.restore()
     
     return expect(result).to.be.rejected
   })
   
-  it('is rejected if the package.json file does not have dependencies', () => {
-    const fsStub = sinon.stub(fs, 'existsSync').returns(true)
-    const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
-    const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, { name: 'depstime'  })
+  it('No dependencies in package.json, should throw error', () => {
+    const packageObj = {
+      name: 'depstime'
+    }
+
+    const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
     
-    const result = depstime('/path/that/does/exist')
-    
-    fsStub.restore()
-    pathStub.restore()
+    const result = depstime()
+
     jsonfileStub.restore()
     
     return expect(result).to.be.rejected
   })
-  
-  it('is resolved with an object containing the dependency data as an array', () => {
-    const packageJson = {
+
+  it('package.json with dependencies, should resolve with correct data', () => {
+    const packageObj = {
       name: 'depstime',
       dependencies: {
-        b: '^1.2.1'
+        a: '^1.2.1'
       },
       devDependencies: {
-        a: '3.0.0'
+        b: '3.0.0'
       }
     }
-    
-    const expected = { 'dependencies': [{
+
+    const parsedDependencies = [{
+      package: 'a',
+      local: {
+        version: '^1.2.1'
+      }
+    },
+    {
       package: 'b',
+      local: {
+        version: '3.0.0'
+      }
+    }]
+
+    const processedDependency1 = {
+      package: 'a',
+      local: {
+        version: '^1.2.1'
+      },
+      wanted: {
+        version: '1.2.2',
+        time_diff: 86382478
+      },
+      latest: {
+        version: '2.0.0',
+        time_diff: 1923164678
+      }
+    }
+
+    const processedDependency2 = {
+      package: 'b',
+      local: {
+        version: '3.0.0'
+      },
+      wanted: {
+        version: '3.0.0',
+        time_diff: 0
+      },
+      latest: {
+        version: '4.0.0',
+        time_diff: 11320472695
+      }
+    }
+
+    const expected = { 'dependencies': [{
+      package: 'a',
       local: {
         version: '^1.2.1'
       },
@@ -90,7 +102,7 @@ describe('depstime', () => {
       }
     },
     {
-      package: 'a',
+      package: 'b',
       local: {
         version: '3.0.0'
       },
@@ -103,44 +115,19 @@ describe('depstime', () => {
         time_diff: 11320472695
       }
     }]}
-    
-    const fsStub = sinon.stub(fs, 'existsSync').returns(true)
-    const pathStub = sinon.stub(path, 'join').returns('/path/that/does/exist/package.json')
-    const jsonfileStub = sinon.stub(jsonfile, 'readFile').yields(null, packageJson)
-    
-    const localSpawn = mockSpawn()
-    child_process.spawn = localSpawn
-    
-    const firstSpawnData = {
-      name: 'b',
-      version: '2.0.0',
-      versions: [ '1.2.1', '1.2.2', '2.0.0' ],
-      time: {
-        '1.2.1': '2017-09-10T21:25:07.758Z',
-        '1.2.2': '2017-09-11T21:24:50.236Z',
-        '2.0.0': '2017-10-03T03:37:52.436Z'
-      }
-    }
-    
-    const secondSpawnData = {
-      name: 'a',
-      version: '4.0.0',
-      versions: [ '3.0.0', '4.0.0' ],
-      time: {
-        '3.0.0': '2017-04-07T15:19:52.346Z',
-        '4.0.0': '2017-08-16T15:54:25.041Z'
-      }
-    }
-    
-    localSpawn.sequence.add(localSpawn.simple(0, JSON.stringify(firstSpawnData)))
-    localSpawn.sequence.add(localSpawn.simple(0, JSON.stringify(secondSpawnData)))
-    
-    const result = depstime('/path/that/does/exist')
-    
-    fsStub.restore()
-    pathStub.restore()
+
+    const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
+    const parseDependenciesStub = sinon.stub(utils, 'parseDependencies').returns(parsedDependencies)
+    const processDependenciesStub = sinon.stub(utils, 'processDependencies')
+    processDependencies.onFirstCall().resolves(processedDependency1)
+    processDependencies.onSecondCall().resolves(processedDependency2)
+
+    const result = depstime()
+
     jsonfileStub.restore()
-    
+    parseDependenciesStub.restore()
+    processDependenciesStub.restore()
+
     return expect(result).to.be.fulfilled.and.to.eventually.deep.equal(expected)
   })
 })

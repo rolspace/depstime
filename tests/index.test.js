@@ -1,9 +1,9 @@
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
-import jsonfile from 'jsonfile';
-import sinon from 'sinon';
-import depstime from '../src/index';
-import * as utils from '../src/utils';
+import chai from 'chai'
+import chaiAsPromised from 'chai-as-promised'
+import jsonfile from 'jsonfile'
+import sinon from 'sinon'
+import depstime from '../src/index'
+import * as utils from '../src/utils'
 
 chai.use(chaiAsPromised)
 const expect = chai.expect
@@ -13,9 +13,9 @@ describe('depstime', () => {
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').rejects()
     
     const result = depstime()
-    
+
     jsonfileStub.restore()
-    
+
     return expect(result).to.be.rejected
   })
   
@@ -33,7 +33,7 @@ describe('depstime', () => {
     return expect(result).to.be.rejected
   })
 
-  it('package.json with dependencies, should resolve with correct data', () => {
+  it('Dependencies in package.json, should resolve with correct data', async () => {
     const packageObj = {
       name: 'depstime',
       dependencies: {
@@ -119,15 +119,15 @@ describe('depstime', () => {
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
     const parseDependenciesStub = sinon.stub(utils, 'parseDependencies').returns(parsedDependencies)
     const processDependenciesStub = sinon.stub(utils, 'processDependencies')
-    processDependencies.onFirstCall().resolves(processedDependency1)
-    processDependencies.onSecondCall().resolves(processedDependency2)
+    processDependenciesStub.onFirstCall().resolves(processedDependency1)
+    processDependenciesStub.onSecondCall().resolves(processedDependency2)
 
-    const result = depstime()
+    const result = await depstime()
 
     jsonfileStub.restore()
     parseDependenciesStub.restore()
     processDependenciesStub.restore()
 
-    return expect(result).to.be.fulfilled.and.to.eventually.deep.equal(expected)
+    return expect(result).to.deep.equal(expected)
   })
 })

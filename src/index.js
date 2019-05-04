@@ -9,27 +9,22 @@ import util from 'util';
 const exec = util.promisify(child.exec)
 
 export default async function depstime(directory, options) {
-  try {
-    if (!directory) {
-      directory = process.cwd()
-    }
-    
-    const packageObj = await jsonfile.readFile(path.join(directory, 'package.json'))
-
-    if (!packageObj.hasOwnProperty('dependencies') && !packageObj.hasOwnProperty('devDependencies')) {
-      throw new Error('There are no dependencies in the package.json file.')
-    }
-
-    const dependencies = { ...packageObj.dependencies, ...packageObj.devDependencies }
-    const parsedDependencies = parseDependencies(dependencies)
-    
-    const promises = parsedDependencies.map(dependency => processDependencies(dependency, options))
-
-    return { dependencies: await Promise.all(promises) }
+  if (!directory) {
+    directory = process.cwd()
   }
-  catch (error) {
-    console.log(error)
+  
+  const packageObj = await jsonfile.readFile(path.join(directory, 'package.json'))
+
+  if (!packageObj.hasOwnProperty('dependencies') && !packageObj.hasOwnProperty('devDependencies')) {
+    throw new Error('There are no dependencies in the package.json file.')
   }
+
+  const dependencies = { ...packageObj.dependencies, ...packageObj.devDependencies }
+  const parsedDependencies = parseDependencies(dependencies)
+  
+  const promises = parsedDependencies.map(dependency => processDependencies(dependency, options))
+
+  return { dependencies: await Promise.all(promises) }
 }
 
 function parseDependencies(dependencies) {

@@ -1,5 +1,4 @@
 import child from 'child_process';
-import fs from 'fs';
 import humanize from 'humanize-duration';
 import jsonfile from 'jsonfile';
 import moment from 'moment';
@@ -9,63 +8,41 @@ import util from 'util';
 
 const exec = util.promisify(child.exec)
 
-export default function depstime(directory, options) {
-  return new Promise((resolve, reject) => {
+export default async function depstime(directory, options) {
+  try {
     if (!directory) {
       directory = process.cwd()
     }
     
-    if (fs.existsSync(directory)) {
-      const packageJsonPath = path.join(directory, 'package.json')
-      
-      jsonfile.readFile(packageJsonPath, (error, packageObj) => {
-        if (error) {
-          reject(`Path ${directory} does not have a package.json file.`)
-        }
-        else {
-          if (!packageObj.hasOwnProperty('dependencies') && !packageObj.hasOwnProperty('devDependencies')) {
-            reject('There are no dependencies in the package.json file.')
-          }
-          
-          let dependencies = parseDependencies(packageObj)
-          let promises = []
-          
-          for (let i = 0; i < dependencies.length; i++) {
-            const dependency = processDependencies(dependencies[i], options)
-            promises.push(dependency)
-          }
-          
-          Promise.all(promises)
-          .then(values => {
-            resolve({ 'dependencies': values })
-          })
-        }
-      })
+    const packageObj = await jsonfile.readFile(path.join(directory, 'package.json'))
+
+    if (!packageObj.hasOwnProperty('dependencies') && !packageObj.hasOwnProperty('devDependencies')) {
+      throw new Error('There are no dependencies in the package.json file.')
     }
-    else {
-      reject(`Path ${directory} does not exist.`)
-    }
-  })
+
+    const dependencies = { ...packageObj.dependencies, ...packageObj.devDependencies }
+    const parsedDependencies = parseDependencies(dependencies)
+    
+    const promises = parsedDependencies.map(dependency => processDependencies(dependency, options))
+
+    return { dependencies: await Promise.all(promises) }
+  }
+  catch (error) {
+    console.log(error)
+  }
 }
 
-function parseDependencies(packageObj) {
-  const parser = (obj) => {
-    let result = []
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        result.push({
-          package: key,
-          local: {
-            version: obj[key]
-          }
-        })
+function parseDependencies(dependencies) {
+  const parsedDependencies = Object.keys(dependencies).map(key => {
+    return {
+      package: key,
+      local: {
+        version: dependencies[key]
       }
     }
-    return result
-  }
-  
-  const parsed = parser(packageObj.dependencies).concat(parser(packageObj.devDependencies))
-  return parsed
+  })
+
+  return parsedDependencies
 }
 
 async function processDependencies(dependency, options) {
@@ -97,7 +74,6 @@ async function processDependencies(dependency, options) {
     }
 
     const processedDependency = {...dependency, wanted, latest }
-
     return processedDependency
   }
   catch (error) {

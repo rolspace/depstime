@@ -1,6 +1,6 @@
-import jsonfile from 'jsonfile';
-import path from 'path';
-import * as utils from './utils';
+import jsonfile from 'jsonfile'
+import path from 'path'
+import * as utils from './utils'
 
 export default async function depstime(directory, options) {
   if (!directory) {

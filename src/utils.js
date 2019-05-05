@@ -1,10 +1,7 @@
-import child from 'child_process'
+import { exec } from 'child_process'
 import humanize from 'humanize-duration'
 import moment from 'moment'
 import semver from 'semver'
-import { promisify } from 'util'
-
-const exec = util.promisify(child.exec)
 
 export function parseDependencies(dependencies) {
   const parsedDependencies = Object.keys(dependencies).map(key => {
@@ -20,12 +17,16 @@ export function parseDependencies(dependencies) {
 }
 
 export async function processDependencies(dependency, options) {
-  try {
-    const { stdout, stderr } = await exec(`npm view ${dependency.package} --json`)
-    const viewData = JSON.parse(stdout)
-    
-    const { local: {version} } = dependency
+    const viewData = await new Promise((resolve, reject) => {
+      exec(`npm view ${dependency.package} --json`, (error, stdout) => {
+        if (error) reject(error)
 
+        resolve(JSON.parse(stdout))
+      })
+    })
+
+    const { local: {version} } = dependency
+  
     const localVersion = semver.minSatisfying(viewData.versions, version)
     const wantedVersion = semver.maxSatisfying(viewData.versions, version)
     const latestVersion = viewData.version
@@ -47,13 +48,8 @@ export async function processDependencies(dependency, options) {
       time_diff: transform(latestTimeDiff, options)
     }
 
-    const processedDependency = {...dependency, wanted, latest }
-    return processedDependency
+    return {...dependency, wanted, latest }
   }
-  catch (error) {
-    console.log(error)
-  }
-}
 
 export function transform(value, options) {
   if (options && options.c) {

@@ -7,7 +7,7 @@ exports.parseDependencies = parseDependencies;
 exports.processDependencies = processDependencies;
 exports.transform = transform;
 
-var _child_process = _interopRequireDefault(require("child_process"));
+var _child_process = require("child_process");
 
 var _humanizeDuration = _interopRequireDefault(require("humanize-duration"));
 
@@ -15,11 +15,7 @@ var _moment = _interopRequireDefault(require("moment"));
 
 var _semver = _interopRequireDefault(require("semver"));
 
-var _util = _interopRequireDefault(require("util"));
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const exec = _util.default.promisify(_child_process.default.exec);
 
 function parseDependencies(dependencies) {
   const parsedDependencies = Object.keys(dependencies).map(key => {
@@ -34,44 +30,40 @@ function parseDependencies(dependencies) {
 }
 
 async function processDependencies(dependency, options) {
-  try {
-    const {
-      stdout,
-      stderr
-    } = await exec(`npm view ${dependency.package} --json`);
-    const viewData = JSON.parse(stdout);
-    const {
-      local: {
-        version
-      }
-    } = dependency;
+  const viewData = await new Promise((resolve, reject) => {
+    (0, _child_process.exec)(`npm view ${dependency.package} --json`, (error, stdout) => {
+      if (error) reject(error);
+      resolve(JSON.parse(stdout));
+    });
+  });
+  const {
+    local: {
+      version
+    }
+  } = dependency;
 
-    const localVersion = _semver.default.minSatisfying(viewData.versions, version);
+  const localVersion = _semver.default.minSatisfying(viewData.versions, version);
 
-    const wantedVersion = _semver.default.maxSatisfying(viewData.versions, version);
+  const wantedVersion = _semver.default.maxSatisfying(viewData.versions, version);
 
-    const latestVersion = viewData.version;
-    const localDate = viewData.time[localVersion];
-    const wantedDate = viewData.time[wantedVersion];
-    const latestDate = viewData.time[latestVersion];
-    const wantedTimeDiff = localDate === wantedDate ? 0 : (0, _moment.default)(wantedDate).valueOf() - (0, _moment.default)(localDate).valueOf();
-    const latestTimeDiff = localDate === latestDate ? 0 : (0, _moment.default)(latestDate).valueOf() - (0, _moment.default)(localDate).valueOf();
-    const wanted = {
-      version: wantedVersion,
-      time_diff: transform(wantedTimeDiff, options)
-    };
-    const latest = {
-      version: latestVersion,
-      time_diff: transform(latestTimeDiff, options)
-    };
-    const processedDependency = { ...dependency,
-      wanted,
-      latest
-    };
-    return processedDependency;
-  } catch (error) {
-    console.log(error);
-  }
+  const latestVersion = viewData.version;
+  const localDate = viewData.time[localVersion];
+  const wantedDate = viewData.time[wantedVersion];
+  const latestDate = viewData.time[latestVersion];
+  const wantedTimeDiff = localDate === wantedDate ? 0 : (0, _moment.default)(wantedDate).valueOf() - (0, _moment.default)(localDate).valueOf();
+  const latestTimeDiff = localDate === latestDate ? 0 : (0, _moment.default)(latestDate).valueOf() - (0, _moment.default)(localDate).valueOf();
+  const wanted = {
+    version: wantedVersion,
+    time_diff: transform(wantedTimeDiff, options)
+  };
+  const latest = {
+    version: latestVersion,
+    time_diff: transform(latestTimeDiff, options)
+  };
+  return { ...dependency,
+    wanted,
+    latest
+  };
 }
 
 function transform(value, options) {

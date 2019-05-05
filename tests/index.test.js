@@ -37,10 +37,10 @@ describe('depstime', () => {
     const packageObj = {
       name: 'depstime',
       dependencies: {
-        a: '^1.2.1'
+        'a': '^1.2.1'
       },
       devDependencies: {
-        b: '3.0.0'
+        'b': '3.0.0'
       }
     }
 

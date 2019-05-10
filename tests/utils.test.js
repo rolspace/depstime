@@ -33,7 +33,7 @@ describe('desptime/utils', () => {
     })
   })
   describe('processDependencies', () => {
-    it('receives a dependency object, should return a modified dependency object with time differences', async () => {
+    it('Receives a dependency object, should resolve with a modified dependency object with time differences', async () => {
       const dependency = {
         package: 'a',
         local: {
@@ -74,6 +74,22 @@ describe('desptime/utils', () => {
       execMock.restore()
 
       return expect(result).to.deep.equal(expected)
+    })
+    it('Receives a dependency object and exec throws an error, should reject', () => {
+      const dependency = {
+        package: 'a',
+        local: {
+          version: '^1.0.0'
+        }
+      }
+      
+      const execMock = sinon.stub(child, 'exec').yields(new Error('Test Error'))
+
+      const result = utils.processDependencies(dependency)
+
+      execMock.restore()
+
+      return expect(result).to.be.rejected
     })
   })
 })

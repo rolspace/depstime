@@ -11,10 +11,17 @@ export default async function depstime(folder, options) {
     throw new Error('There are no dependencies in the package.json file.')
   }
 
-  const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies }
-  const parsedDependencies = Object.keys(dependencies).map(key => utils.parseDependency(key, dependencies[key]))
+  const dependencies = {
+    ...packageJson.dependencies,
+    ...packageJson.devDependencies
+  }
+
+  const parsedDependencies = Object
+    .keys(dependencies)
+    .map(key => utils.parseDependency(key, dependencies[key]))
   
-  const processedDependencies = parsedDependencies.map(dependency => utils.processDependency(dependency, options))
+  const processedDependencies = parsedDependencies
+    .map(dependency => utils.processDependency(dependency, options))
 
   return {
     dependencies: await Promise.all(processedDependencies)

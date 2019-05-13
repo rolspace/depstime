@@ -38,12 +38,12 @@ export async function processDependency(dependency, options) {
   const wantedVersion = semver.maxSatisfying(viewData.versions, version)
   const latestVersion = viewData.version
   
-  const localDate = viewData.time[localVersion]
-  const wantedDate = viewData.time[wantedVersion]
-  const latestDate = viewData.time[latestVersion]
+  const localTime = viewData.time[localVersion]
+  const wantedTime = viewData.time[wantedVersion]
+  const latestTime = viewData.time[latestVersion]
   
-  const wantedTimeDiff = localDate === wantedDate ? 0 : moment(wantedDate).valueOf() - moment(localDate).valueOf()
-  const latestTimeDiff = localDate === latestDate ? 0 :  moment(latestDate).valueOf() - moment(localDate).valueOf()
+  const wantedTimeDiff = localTime === wantedTime ? 0 : moment(wantedTime).valueOf() - moment(localTime).valueOf()
+  const latestTimeDiff = localTime === latestTime ? 0 :  moment(latestTime).valueOf() - moment(localTime).valueOf()
 
   const wanted = {
     version: wantedVersion,

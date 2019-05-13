@@ -15,24 +15,21 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-async function depstime(directory, options) {
-  if (!directory) {
-    directory = process.cwd();
-  }
+async function depstime(folder, options) {
+  let packageJsonFolder = folder || process.cwd();
+  const packageJson = await _jsonfile.default.readFile(_path.default.join(packageJsonFolder, 'package.json'));
 
-  const packageObj = await _jsonfile.default.readFile(_path.default.join(directory, 'package.json'));
-
-  if (!packageObj.hasOwnProperty('dependencies') && !packageObj.hasOwnProperty('devDependencies')) {
+  if (!packageJson.hasOwnProperty('dependencies') && !packageJson.hasOwnProperty('devDependencies')) {
     throw new Error('There are no dependencies in the package.json file.');
   }
 
-  const dependencies = { ...packageObj.dependencies,
-    ...packageObj.devDependencies
+  const dependencies = { ...packageJson.dependencies,
+    ...packageJson.devDependencies
   };
-  const parsedDependencies = utils.parseDependencies(dependencies);
-  const promises = parsedDependencies.map(dependency => utils.processDependencies(dependency, options));
+  const parsedDependencies = Object.keys(dependencies).map(key => utils.parseDependency(key, dependencies[key]));
+  const processedDependencies = parsedDependencies.map(dependency => utils.processDependency(dependency, options));
   return {
-    dependencies: await Promise.all(promises)
+    dependencies: await Promise.all(processedDependencies)
   };
 }
 

@@ -14,7 +14,7 @@ var _index = _interopRequireDefault(require("./index"));
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 async function cli() {
-  const options = _yargs.default.usage('$0 [directory]').option('compact', {
+  const options = _yargs.default.usage('$0 [folder]').option('compact', {
     alias: 'c',
     describe: 'Output time difference as a human readable value up to the \'days\' unit with rounding',
     type: 'boolean'
@@ -25,7 +25,8 @@ async function cli() {
   }).help('help', 'Show help message').argv;
 
   try {
-    const result = await (0, _index.default)(options._[0], options);
+    const folder = options._[0];
+    const result = await (0, _index.default)(folder, options);
     console.log(_util.default.inspect(result, {
       colors: true,
       depth: null

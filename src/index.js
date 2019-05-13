@@ -2,21 +2,21 @@ import jsonfile from 'jsonfile'
 import path from 'path'
 import * as utils from './utils'
 
-export default async function depstime(directory, options) {
-  if (!directory) {
-    directory = process.cwd()
-  }
+export default async function depstime(folder, options) {
+  let packageJsonFolder = folder || process.cwd()
   
-  const packageObj = await jsonfile.readFile(path.join(directory, 'package.json'))
+  const packageJson = await jsonfile.readFile(path.join(packageJsonFolder, 'package.json'))
 
-  if (!packageObj.hasOwnProperty('dependencies') && !packageObj.hasOwnProperty('devDependencies')) {
+  if (!packageJson.hasOwnProperty('dependencies') && !packageJson.hasOwnProperty('devDependencies')) {
     throw new Error('There are no dependencies in the package.json file.')
   }
 
-  const dependencies = { ...packageObj.dependencies, ...packageObj.devDependencies }
-  const parsedDependencies = utils.parseDependencies(dependencies)
+  const dependencies = { ...packageJson.dependencies, ...packageJson.devDependencies }
+  const parsedDependencies = Object.keys(dependencies).map(key => utils.parseDependency(key, dependencies[key]))
   
-  const promises = parsedDependencies.map(dependency => utils.processDependencies(dependency, options))
+  const processedDependencies = parsedDependencies.map(dependency => utils.processDependency(dependency, options))
 
-  return { dependencies: await Promise.all(promises) }
+  return {
+    dependencies: await Promise.all(processedDependencies)
+  }
 }

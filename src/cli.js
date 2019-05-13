@@ -4,7 +4,7 @@ import depstime from './index'
 
 export default async function cli() {
 	const options = yargs
-    .usage('$0 [directory]')
+    .usage('$0 [folder]')
     .option('compact', {
       alias: 'c',
       describe: 'Output time difference as a human readable value up to the \'days\' unit with rounding',
@@ -19,7 +19,9 @@ export default async function cli() {
     .argv
 
   try {
-    const result = await depstime(options._[0], options)
+    const folder = options._[0]
+    const result = await depstime(folder, options)
+    
     console.log(util.inspect(result, { colors: true, depth: null }))
   }
   catch (error) {

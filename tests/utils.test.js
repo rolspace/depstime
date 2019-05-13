@@ -8,32 +8,25 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 
 describe('desptime/utils', () => {
-  describe('parseDependencies', () => {
-    it('receives an object with keys, should return an array of objects', () => {
-      const dependencies = {
-        'a': '1.0.0',
-        'b': '^3.0.1'
-      }
+  describe('parseDependency', () => {
+    it('receives valid parameters, should return a new object', () => {
+      const dependencyName = 'a'
+      const dependencyVersion = '1.0.0'
 
-      const expected = [{
+      const expected = {
         package: 'a',
         local: {
           version: '1.0.0'
         }
-      },{
-        package: 'b',
-        local: {
-          version: '^3.0.1'
-        }
-      }]
+      }
 
-      const result = utils.parseDependencies(dependencies)
+      const result = utils.parseDependency(dependencyName, dependencyVersion)
 
       expect(result).to.deep.equal(expected)
     })
   })
-  describe('processDependencies', () => {
-    it('Receives a dependency object, should resolve with a modified dependency object with time differences', async () => {
+  describe('processDependency', () => {
+    it('Receives a dependency value, should resolve with a modified dependency object with time differences', async () => {
       const dependency = {
         package: 'a',
         local: {
@@ -69,7 +62,7 @@ describe('desptime/utils', () => {
 
       const execMock = sinon.stub(child, 'exec').yields(undefined, execResult)
 
-      const result = await utils.processDependencies(dependency)
+      const result = await utils.processDependency(dependency)
 
       execMock.restore()
 
@@ -85,7 +78,7 @@ describe('desptime/utils', () => {
       
       const execMock = sinon.stub(child, 'exec').yields(new Error('Test Error'))
 
-      const result = utils.processDependencies(dependency)
+      const result = utils.processDependency(dependency)
 
       execMock.restore()
 

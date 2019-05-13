@@ -44,18 +44,18 @@ describe('depstime', () => {
       }
     }
 
-    const parsedDependencies = [{
+    const parsedDependency1 = {
       package: 'a',
       local: {
         version: '^1.2.1'
       }
-    },
-    {
+    }
+    const parsedDependency2 = {
       package: 'b',
       local: {
         version: '3.0.0'
       }
-    }]
+    }
 
     const processedDependency1 = {
       package: 'a',
@@ -71,7 +71,6 @@ describe('depstime', () => {
         time_diff: 1923164678
       }
     }
-
     const processedDependency2 = {
       package: 'b',
       local: {
@@ -117,16 +116,19 @@ describe('depstime', () => {
     }]}
 
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
-    const parseDependenciesStub = sinon.stub(utils, 'parseDependencies').returns(parsedDependencies)
-    const processDependenciesStub = sinon.stub(utils, 'processDependencies')
-    processDependenciesStub.onFirstCall().resolves(processedDependency1)
-    processDependenciesStub.onSecondCall().resolves(processedDependency2)
+    const parseDependencyStub = sinon.stub(utils, 'parseDependency')
+    parseDependencyStub.onFirstCall().returns(parsedDependency1)
+    parseDependencyStub.onSecondCall().returns(parsedDependency2)
+    
+    const processDependencyStub = sinon.stub(utils, 'processDependency')
+    processDependencyStub.onFirstCall().resolves(processedDependency1)
+    processDependencyStub.onSecondCall().resolves(processedDependency2)
 
     const result = await depstime()
 
     jsonfileStub.restore()
-    parseDependenciesStub.restore()
-    processDependenciesStub.restore()
+    parseDependencyStub.restore()
+    processDependencyStub.restore()
 
     return expect(result).to.deep.equal(expected)
   })

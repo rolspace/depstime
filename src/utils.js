@@ -3,20 +3,27 @@ import humanize from 'humanize-duration'
 import moment from 'moment'
 import semver from 'semver'
 
-export function parseDependencies(dependencies) {
-  const parsedDependencies = Object.keys(dependencies).map(key => {
-    return {
-      package: key,
-      local: {
-        version: dependencies[key]
-      }
-    }
-  })
-
-  return parsedDependencies
+export function transform(value, options) {
+  if (options && options.c) {
+    return humanize(value, { round: true, units: ['y', 'mo', 'w', 'd'] })
+  }
+  else if (options && options.f) {
+    return humanize(value, { round: true })
+  }
+  
+  return value
 }
 
-export async function processDependencies(dependency, options) {
+export function parseDependency(dependencyName, dependencyVersion) {
+  return {
+    package: dependencyName,
+    local: {
+      version: dependencyVersion
+    }
+  }
+}
+
+export async function processDependency(dependency, options) {
   const viewData = await new Promise((resolve, reject) => {
     exec(`npm view ${dependency.package} --json`, (error, stdout) => {
       if (error) reject(error)
@@ -49,15 +56,4 @@ export async function processDependencies(dependency, options) {
   }
 
   return {...dependency, wanted, latest }
-}
-
-export function transform(value, options) {
-  if (options && options.c) {
-    return humanize(value, { round: true, units: ['y', 'mo', 'w', 'd'] })
-  }
-  else if (options && options.f) {
-    return humanize(value, { round: true })
-  }
-  
-  return value
 }

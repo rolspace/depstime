@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/rolspace/depstime.svg?branch=master)](https://travis-ci.org/rolspace/depstime)
 [![GitHub license](https://img.shields.io/github/license/rolspace/depstime.svg)](https://github.com/rolspace/depstime/blob/master/LICENSE)
 
-Depstime is a utility for analyzing the dependencies in a project and obtaining the time differences between the locally installed version of a package and the wanted/latest versions available.
+Depstime is a utility for analyzing dependencies and listing the time differences between the locally installed version of a package and the [wanted/latest](https://docs.npmjs.com/cli/outdated.html) versions available.
 
 ## Installation
 
@@ -70,6 +70,6 @@ The time difference is calculated by taking the publish time of the locally inst
 
 ## Options
 
-`--human-compact, -c`: Converts the output of the time differences into a human readable string. The string shows time difference values up to the 'days' unit with rounding.
+`--compact, -c`: Converts the output of the time differences into a human readable string. The string shows time difference values up to the 'days' unit with rounding.
 
-`--human-full, -f`: Converts the output of the time differences into a human readable string. The string shows the full time difference values up to the 'seconds' unit with rounding.
+`--full, -f`: Converts the output of the time differences into a human readable string. The string shows the full time difference values up to the 'seconds' unit with rounding.

@@ -1,3 +1,4 @@
+/* global describe it */
 import chai from 'chai'
 import child from 'child_process'
 import chaiAsPromised from 'chai-as-promised'
@@ -75,7 +76,7 @@ describe('desptime/utils', () => {
           version: '^1.0.0'
         }
       }
-      
+
       const execMock = sinon.stub(child, 'exec').yields(new Error('Test Error'))
 
       const result = utils.processDependency(dependency)

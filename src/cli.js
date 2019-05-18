@@ -2,8 +2,8 @@ import util from 'util'
 import yargs from 'yargs'
 import depstime from './index'
 
-export default async function cli() {
-	const options = yargs
+export default async function cli () {
+  const options = yargs
     .usage('$0 [folder]')
     .option('compact', {
       alias: 'c',
@@ -21,10 +21,9 @@ export default async function cli() {
   try {
     const folder = options._[0]
     const result = await depstime(folder, options)
-    
+
     console.log(util.inspect(result, { colors: true, depth: null }))
-  }
-  catch (error) {
+  } catch (error) {
     console.log(error)
   }
 }

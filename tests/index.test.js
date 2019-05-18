@@ -1,3 +1,4 @@
+/* global describe it */
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import jsonfile from 'jsonfile'
@@ -11,25 +12,25 @@ const expect = chai.expect
 describe('depstime', () => {
   it('No such file or directory, should throw error', () => {
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').rejects()
-    
+
     const result = depstime()
 
     jsonfileStub.restore()
 
     return expect(result).to.be.rejected
   })
-  
+
   it('No dependencies in package.json, should throw error', () => {
     const packageObj = {
       name: 'depstime'
     }
 
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
-    
+
     const result = depstime()
 
     jsonfileStub.restore()
-    
+
     return expect(result).to.be.rejected
   })
 
@@ -86,40 +87,42 @@ describe('depstime', () => {
       }
     }
 
-    const expected = { 'dependencies': [{
-      package: 'a',
-      local: {
-        version: '^1.2.1'
+    const expected = { 'dependencies': [
+      {
+        package: 'a',
+        local: {
+          version: '^1.2.1'
+        },
+        wanted: {
+          version: '1.2.2',
+          time_diff: 86382478
+        },
+        latest: {
+          version: '2.0.0',
+          time_diff: 1923164678
+        }
       },
-      wanted: {
-        version: '1.2.2',
-        time_diff: 86382478
-      },
-      latest: {
-        version: '2.0.0',
-        time_diff: 1923164678
-      }
-    },
-    {
-      package: 'b',
-      local: {
-        version: '3.0.0'
-      },
-      wanted: {
-        version: '3.0.0',
-        time_diff: 0
-      },
-      latest: {
-        version: '4.0.0',
-        time_diff: 11320472695
-      }
-    }]}
+      {
+        package: 'b',
+        local: {
+          version: '3.0.0'
+        },
+        wanted: {
+          version: '3.0.0',
+          time_diff: 0
+        },
+        latest: {
+          version: '4.0.0',
+          time_diff: 11320472695
+        }
+      }]
+    }
 
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
     const parseDependencyStub = sinon.stub(utils, 'parseDependency')
     parseDependencyStub.onFirstCall().returns(parsedDependency1)
     parseDependencyStub.onSecondCall().returns(parsedDependency2)
-    
+
     const processDependencyStub = sinon.stub(utils, 'processDependency')
     processDependencyStub.onFirstCall().resolves(processedDependency1)
     processDependencyStub.onSecondCall().resolves(processedDependency2)

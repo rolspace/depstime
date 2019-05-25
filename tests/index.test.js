@@ -9,7 +9,7 @@ import * as utils from '../src/utils'
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
-describe('depstime', () => {
+describe('depstime/index', () => {
   it('No such file or directory, should throw error', () => {
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').rejects()
 

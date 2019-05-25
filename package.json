@@ -11,7 +11,7 @@
   "scripts": {
     "build": "babel src/ -d dist/",
     "eslint": "eslint .",
-    "test": "nyc --reporter=text mocha --require @babel/register ./tests/*.test.js"
+    "test": "nyc --reporter=text mocha --require @babel/register ./tests/**"
   },
   "bin": {
     "depstime": "bin/depstime"

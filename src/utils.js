@@ -17,8 +17,8 @@ export function parseDependency (dependencyName, dependencyVersion) {
   return {
     package: dependencyName,
     local: {
-      version: dependencyVersion
-    }
+      version: dependencyVersion,
+    },
   }
 }
 
@@ -46,12 +46,12 @@ export async function processDependency (dependency, options) {
 
   const wanted = {
     version: wantedVersion,
-    time_diff: transform(wantedTimeDiff, options)
+    time_diff: transform(wantedTimeDiff, options),
   }
 
   const latest = {
     version: latestVersion,
-    time_diff: transform(latestTimeDiff, options)
+    time_diff: transform(latestTimeDiff, options),
   }
 
   return { ...dependency, wanted, latest }

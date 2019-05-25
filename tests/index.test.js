@@ -22,7 +22,7 @@ describe('depstime', () => {
 
   it('No dependencies in package.json, should throw error', () => {
     const packageObj = {
-      name: 'depstime'
+      name: 'depstime',
     }
 
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
@@ -38,84 +38,84 @@ describe('depstime', () => {
     const packageObj = {
       name: 'depstime',
       dependencies: {
-        'a': '^1.2.1'
+        'a': '^1.2.1',
       },
       devDependencies: {
-        'b': '3.0.0'
-      }
+        'b': '3.0.0',
+      },
     }
 
     const parsedDependency1 = {
       package: 'a',
       local: {
-        version: '^1.2.1'
-      }
+        version: '^1.2.1',
+      },
     }
     const parsedDependency2 = {
       package: 'b',
       local: {
-        version: '3.0.0'
-      }
+        version: '3.0.0',
+      },
     }
 
     const processedDependency1 = {
       package: 'a',
       local: {
-        version: '^1.2.1'
+        version: '^1.2.1',
       },
       wanted: {
         version: '1.2.2',
-        time_diff: 86382478
+        time_diff: 86382478,
       },
       latest: {
         version: '2.0.0',
-        time_diff: 1923164678
-      }
+        time_diff: 1923164678,
+      },
     }
     const processedDependency2 = {
       package: 'b',
       local: {
-        version: '3.0.0'
+        version: '3.0.0',
       },
       wanted: {
         version: '3.0.0',
-        time_diff: 0
+        time_diff: 0,
       },
       latest: {
         version: '4.0.0',
-        time_diff: 11320472695
-      }
+        time_diff: 11320472695,
+      },
     }
 
     const expected = { 'dependencies': [
       {
         package: 'a',
         local: {
-          version: '^1.2.1'
+          version: '^1.2.1',
         },
         wanted: {
           version: '1.2.2',
-          time_diff: 86382478
+          time_diff: 86382478,
         },
         latest: {
           version: '2.0.0',
-          time_diff: 1923164678
-        }
+          time_diff: 1923164678,
+        },
       },
       {
         package: 'b',
         local: {
-          version: '3.0.0'
+          version: '3.0.0',
         },
         wanted: {
           version: '3.0.0',
-          time_diff: 0
+          time_diff: 0,
         },
         latest: {
           version: '4.0.0',
-          time_diff: 11320472695
-        }
-      }]
+          time_diff: 11320472695,
+        },
+      }],
     }
 
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)

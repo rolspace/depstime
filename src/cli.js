@@ -8,12 +8,12 @@ export default async function cli () {
     .option('compact', {
       alias: 'c',
       describe: 'Output time difference as a human readable value up to the \'days\' unit with rounding',
-      type: 'boolean'
+      type: 'boolean',
     })
     .option('full', {
       alias: 'f',
       describe: 'Output time difference as a human readable value up to the \'seconds\' unit with rounding',
-      type: 'boolean'
+      type: 'boolean',
     })
     .help('help', 'Show help message')
     .argv

@@ -13,7 +13,7 @@ export default async function depstime (folder, options) {
 
   const dependencies = {
     ...packageJson.dependencies,
-    ...packageJson.devDependencies
+    ...packageJson.devDependencies,
   }
 
   const parsedDependencies = Object
@@ -24,6 +24,6 @@ export default async function depstime (folder, options) {
     .map(dependency => utils.processDependency(dependency, options))
 
   return {
-    dependencies: await Promise.all(processedDependencies)
+    dependencies: await Promise.all(processedDependencies),
   }
 }

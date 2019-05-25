@@ -17,8 +17,8 @@ describe('desptime/utils', () => {
       const expected = {
         package: 'a',
         local: {
-          version: '1.0.0'
-        }
+          version: '1.0.0',
+        },
       }
 
       const result = utils.parseDependency(dependencyName, dependencyVersion)
@@ -31,23 +31,23 @@ describe('desptime/utils', () => {
       const dependency = {
         package: 'a',
         local: {
-          version: '^1.0.0'
-        }
+          version: '^1.0.0',
+        },
       }
 
       const expected = {
         package: 'a',
         local: {
-          version: '^1.0.0'
+          version: '^1.0.0',
         },
         wanted: {
           version: '1.2.0',
-          time_diff: 86382478
+          time_diff: 86382478,
         },
         latest: {
           version: '2.0.0',
-          time_diff: 1923164678
-        }
+          time_diff: 1923164678,
+        },
       }
 
       const execResult = JSON.stringify({
@@ -57,8 +57,8 @@ describe('desptime/utils', () => {
         time: {
           '1.0.0': '2018-09-10T21:25:07.758Z',
           '1.2.0': '2018-09-11T21:24:50.236Z',
-          '2.0.0': '2018-10-03T03:37:52.436Z'
-        }
+          '2.0.0': '2018-10-03T03:37:52.436Z',
+        },
       })
 
       const execMock = sinon.stub(child, 'exec').yields(undefined, execResult)
@@ -73,8 +73,8 @@ describe('desptime/utils', () => {
       const dependency = {
         package: 'a',
         local: {
-          version: '^1.0.0'
-        }
+          version: '^1.0.0',
+        },
       }
 
       const execMock = sinon.stub(child, 'exec').yields(new Error('Test Error'))

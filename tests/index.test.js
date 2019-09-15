@@ -4,7 +4,7 @@ import chaiAsPromised from 'chai-as-promised'
 import jsonfile from 'jsonfile'
 import sinon from 'sinon'
 import depstime from '../src/index'
-import * as utils from '../src/utils'
+import * as dependency from '../src/dependency'
 
 chai.use(chaiAsPromised)
 const expect = chai.expect
@@ -38,10 +38,10 @@ describe('depstime/index', () => {
     const packageObj = {
       name: 'depstime',
       dependencies: {
-        'a': '^1.2.1',
+        a: '^1.2.1',
       },
       devDependencies: {
-        'b': '3.0.0',
+        b: '3.0.0',
       },
     }
 
@@ -87,43 +87,44 @@ describe('depstime/index', () => {
       },
     }
 
-    const expected = { 'dependencies': [
-      {
-        package: 'a',
-        local: {
-          version: '^1.2.1',
+    const expected = {
+      dependencies: [
+        {
+          package: 'a',
+          local: {
+            version: '^1.2.1',
+          },
+          wanted: {
+            version: '1.2.2',
+            time_diff: 86382478,
+          },
+          latest: {
+            version: '2.0.0',
+            time_diff: 1923164678,
+          },
         },
-        wanted: {
-          version: '1.2.2',
-          time_diff: 86382478,
-        },
-        latest: {
-          version: '2.0.0',
-          time_diff: 1923164678,
-        },
-      },
-      {
-        package: 'b',
-        local: {
-          version: '3.0.0',
-        },
-        wanted: {
-          version: '3.0.0',
-          time_diff: 0,
-        },
-        latest: {
-          version: '4.0.0',
-          time_diff: 11320472695,
-        },
-      }],
+        {
+          package: 'b',
+          local: {
+            version: '3.0.0',
+          },
+          wanted: {
+            version: '3.0.0',
+            time_diff: 0,
+          },
+          latest: {
+            version: '4.0.0',
+            time_diff: 11320472695,
+          },
+        }],
     }
 
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
-    const parseDependencyStub = sinon.stub(utils, 'parseDependency')
+    const parseDependencyStub = sinon.stub(dependency, 'parse')
     parseDependencyStub.onFirstCall().returns(parsedDependency1)
     parseDependencyStub.onSecondCall().returns(parsedDependency2)
 
-    const processDependencyStub = sinon.stub(utils, 'processDependency')
+    const processDependencyStub = sinon.stub(dependency, 'process')
     processDependencyStub.onFirstCall().resolves(processedDependency1)
     processDependencyStub.onSecondCall().resolves(processedDependency2)
 

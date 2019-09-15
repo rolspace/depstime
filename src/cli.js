@@ -5,6 +5,10 @@ import depstime from './index'
 export default async function cli () {
   const options = yargs
     .usage('$0 [folder]')
+    .option('yarn', {
+      describe: 'use yarn instead of npm',
+      type: 'boolean',
+    })
     .option('compact', {
       alias: 'c',
       describe: 'Output time difference as a human readable value up to the \'days\' unit with rounding',

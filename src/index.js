@@ -1,11 +1,10 @@
 import jsonfile from 'jsonfile'
 import path from 'path'
-import * as dependency from './dependency'
+import * as timediff from './timediff'
 
-export default async function depstime (folder, options) {
-  const packageJsonFolder = folder || process.cwd()
-
-  const packageConfig = await jsonfile.readFile(path.join(packageJsonFolder, 'package.json'))
+export async function depstime (folder, options) {
+  const packageJsonPath = path.join(folder || process.cwd(), 'package.json')
+  const packageConfig = await jsonfile.readFile(packageJsonPath)
 
   if (!packageConfig.dependencies && !packageConfig.devDependencies) {
     throw new Error('There are no dependencies in the package.json file.')
@@ -16,14 +15,18 @@ export default async function depstime (folder, options) {
     ...packageConfig.devDependencies,
   }
 
-  const parsedDependencies = Object
+  const results = Object
     .keys(dependencies)
-    .map(key => dependency.parse(key, dependencies[key]))
+    .map(name => timediff.create(name, dependencies[name]))
+    .map(Timediff => {
+      const useNpm = options && !options.yarn
+      const useFullTime = options && options.f && !options.c
+      const useCompactTime = options && options.c && !options.f
 
-  const processedDependencies = parsedDependencies
-    .map(dependencyValue => dependency.process(dependencyValue, options && options.yarn, options))
+      return timediff.process(Timediff, useNpm, useFullTime, useCompactTime)
+    })
 
   return {
-    dependencies: await Promise.all(processedDependencies),
+    dependencies: await Promise.all(results),
   }
 }

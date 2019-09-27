@@ -3,14 +3,14 @@ import chai from 'chai'
 import child from 'child_process'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import * as dependency from '../src/dependency'
+import * as timediff from '../src/timediff'
 
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
-describe('depstime/dependency', () => {
-  describe('parse', () => {
-    it('receives valid parameters, should return a new object', () => {
+describe('depstime/timediff', () => {
+  describe('create', () => {
+    it('Receives valid dependency name and version, should return the correct object', () => {
       const dependencyName = 'a'
       const dependencyVersion = '1.0.0'
 
@@ -21,13 +21,13 @@ describe('depstime/dependency', () => {
         },
       }
 
-      const result = dependency.parse(dependencyName, dependencyVersion)
+      const result = timediff.create(dependencyName, dependencyVersion)
 
       expect(result).to.deep.equal(expected)
     })
   })
   describe('process', () => {
-    it('Receives a dependency value, should resolve with a modified dependency object with time differences', async () => {
+    it('Receives a valid dependency object, should resolve with a modified dependency object with time differences', async () => {
       const dependencyObject = {
         package: 'a',
         local: {
@@ -63,13 +63,13 @@ describe('depstime/dependency', () => {
 
       const execMock = sinon.stub(child, 'exec').yields(undefined, execResult)
 
-      const result = await dependency.process(dependencyObject, false)
+      const result = await timediff.process(dependencyObject, true, false, false)
+
+      expect(result).to.deep.equal(expected)
 
       execMock.restore()
-
-      return expect(result).to.deep.equal(expected)
     })
-    it('Receives a dependency object and exec throws an error, should reject', () => {
+    it('Receives a dependency object and child_process.exec throws an error, should reject', async () => {
       const dependencyObject = {
         package: 'a',
         local: {
@@ -79,11 +79,11 @@ describe('depstime/dependency', () => {
 
       const execMock = sinon.stub(child, 'exec').yields(new Error('Test Error'))
 
-      const result = dependency.process(dependencyObject, false)
+      const result = timediff.process(dependencyObject, true, false, false)
+
+      await expect(result).to.be.rejected
 
       execMock.restore()
-
-      return expect(result).to.be.rejected
     })
   })
 })

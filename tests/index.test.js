@@ -3,24 +3,24 @@ import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import jsonfile from 'jsonfile'
 import sinon from 'sinon'
-import depstime from '../src/index'
-import * as dependency from '../src/dependency'
+import { depstime } from '../src/index'
+import * as timediff from '../src/timediff'
 
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
 describe('depstime/index', () => {
-  it('No such file or directory, should throw error', () => {
+  it('Cannot find package.json file, should reject', async () => {
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').rejects()
 
     const result = depstime()
 
-    jsonfileStub.restore()
+    await expect(result).to.be.rejected
 
-    return expect(result).to.be.rejected
+    jsonfileStub.restore()
   })
 
-  it('No dependencies in package.json, should throw error', () => {
+  it('No dependencies found in package.json file, should reject with a specific error', async () => {
     const packageObj = {
       name: 'depstime',
     }
@@ -29,12 +29,12 @@ describe('depstime/index', () => {
 
     const result = depstime()
 
-    jsonfileStub.restore()
+    await expect(result).to.be.rejectedWith('There are no dependencies in the package.json file.')
 
-    return expect(result).to.be.rejected
+    jsonfileStub.restore()
   })
 
-  it('Dependencies in package.json, should resolve with correct data', async () => {
+  it('Dependencies found in package.json file, should resolve with correct data', async () => {
     const packageObj = {
       name: 'depstime',
       dependencies: {
@@ -120,20 +120,20 @@ describe('depstime/index', () => {
     }
 
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
-    const parseDependencyStub = sinon.stub(dependency, 'parse')
+    const parseDependencyStub = sinon.stub(timediff, 'create')
     parseDependencyStub.onFirstCall().returns(parsedDependency1)
     parseDependencyStub.onSecondCall().returns(parsedDependency2)
 
-    const processDependencyStub = sinon.stub(dependency, 'process')
+    const processDependencyStub = sinon.stub(timediff, 'process')
     processDependencyStub.onFirstCall().resolves(processedDependency1)
     processDependencyStub.onSecondCall().resolves(processedDependency2)
 
     const result = await depstime()
 
+    expect(result).to.deep.equal(expected)
+
     jsonfileStub.restore()
     parseDependencyStub.restore()
     processDependencyStub.restore()
-
-    return expect(result).to.deep.equal(expected)
   })
 })

@@ -3,34 +3,39 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = depstime;
+exports.depstime = depstime;
 
 var _jsonfile = _interopRequireDefault(require("jsonfile"));
 
 var _path = _interopRequireDefault(require("path"));
 
-var utils = _interopRequireWildcard(require("./utils"));
+var timediff = _interopRequireWildcard(require("./timediff"));
 
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; if (obj != null) { var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 async function depstime(folder, options) {
-  let packageJsonFolder = folder || process.cwd();
-  const packageJson = await _jsonfile.default.readFile(_path.default.join(packageJsonFolder, 'package.json'));
+  const packageJsonPath = _path.default.join(folder || process.cwd(), 'package.json');
 
-  if (!packageJson.hasOwnProperty('dependencies') && !packageJson.hasOwnProperty('devDependencies')) {
+  const packageConfig = await _jsonfile.default.readFile(packageJsonPath);
+
+  if (!packageConfig.dependencies && !packageConfig.devDependencies) {
     throw new Error('There are no dependencies in the package.json file.');
   }
 
-  const dependencies = { ...packageJson.dependencies,
-    ...packageJson.devDependencies
+  const dependencies = { ...packageConfig.dependencies,
+    ...packageConfig.devDependencies
   };
-  const parsedDependencies = Object.keys(dependencies).map(key => utils.parseDependency(key, dependencies[key]));
-  const processedDependencies = parsedDependencies.map(dependency => utils.processDependency(dependency, options));
+  const results = Object.keys(dependencies).map(name => timediff.create(name, dependencies[name])).map(Timediff => {
+    const useNpm = options && !options.yarn;
+    const useFullTime = options && options.f && !options.c;
+    const useCompactTime = options && options.c && !options.f;
+    return timediff.process(Timediff, useNpm, useFullTime, useCompactTime);
+  });
   return {
-    dependencies: await Promise.all(processedDependencies)
+    dependencies: await Promise.all(results)
   };
 }
-
-module.exports = exports.default;

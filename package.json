@@ -21,28 +21,28 @@
     "url": "https://github.com/rolspace/depstime"
   },
   "devDependencies": {
-    "@babel/cli": "^7.6.0",
-    "@babel/core": "^7.6.0",
-    "@babel/preset-env": "^7.6.0",
-    "@babel/register": "^7.6.0",
+    "@babel/cli": "^7.8.3",
+    "@babel/core": "^7.8.3",
+    "@babel/preset-env": "^7.8.3",
+    "@babel/register": "^7.8.3",
     "babel-plugin-add-module-exports": "^1.0.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^6.3.0",
+    "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-import": "^2.20.0",
+    "eslint-plugin-node": "^11.0.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "mocha": "^6.2.0",
-    "nyc": "^14.1.1",
-    "sinon": "^7.4.2"
+    "mocha": "^7.0.0",
+    "nyc": "^15.0.0",
+    "sinon": "^8.1.0"
   },
   "dependencies": {
-    "humanize-duration": "^3.20.1",
+    "humanize-duration": "^3.21.0",
     "jsonfile": "^5.0.0",
     "moment": "^2.24.0",
-    "semver": "^6.3.0",
-    "yargs": "^14.0.0"
+    "semver": "^7.1.1",
+    "yargs": "^15.1.0"
   }
 }

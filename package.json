@@ -1,6 +1,6 @@
 {
   "name": "depstime",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "author": "Rolando Ramos",
   "description": "Displays the time differences between the locally installed version of a package, the wanted version on your package.json configuration, and the latest available version.",
   "license": "MIT",
@@ -21,30 +21,30 @@
     "url": "https://github.com/rolspace/depstime"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.3",
-    "@babel/core": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
-    "@babel/register": "^7.8.3",
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/register": "^7.9.0",
     "babel-plugin-add-module-exports": "^1.0.2",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "eslint": "^6.8.0",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.20.0",
-    "eslint-plugin-node": "^11.0.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "mocha": "^7.0.0",
-    "nyc": "^15.0.0",
-    "sinon": "^8.1.0",
+    "mocha": "^7.1.1",
+    "nyc": "^15.0.1",
+    "sinon": "^9.0.1",
     "tslint": "^5.20.0",
     "typescript": "^3.6.3"
   },
   "dependencies": {
-    "humanize-duration": "^3.21.0",
-    "jsonfile": "^5.0.0",
+    "humanize-duration": "^3.22.0",
+    "jsonfile": "^6.0.1",
     "moment": "^2.24.0",
-    "semver": "^7.1.1",
-    "yargs": "^15.1.0"
+    "semver": "^7.1.3",
+    "yargs": "^15.3.1"
   }
 }

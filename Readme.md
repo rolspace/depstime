@@ -1,10 +1,9 @@
 # depstime
 
 [![npm](https://img.shields.io/npm/v/depstime.svg)](https://www.npmjs.com/package/depstime)
-[![Build Status](https://travis-ci.org/rolspace/depstime.svg?branch=master)](https://travis-ci.org/rolspace/depstime)
 [![GitHub license](https://img.shields.io/github/license/rolspace/depstime.svg)](https://github.com/rolspace/depstime/blob/master/LICENSE)
 
-Depstime is a utility for analyzing dependencies and listing the time differences between the locally installed version of a package and the [wanted/latest](https://docs.npmjs.com/cli/outdated.html) versions available.
+depstime is a utility for analyzing dependencies and listing the time differences between the locally installed version of a package and the [wanted/latest](https://docs.npmjs.com/cli/outdated.html) versions available.
 
 ## Installation
 

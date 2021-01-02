@@ -4,6 +4,8 @@
 
 **depstime** is a utility for analyzing dependencies and listing the time differences between the locally installed version of a package and the [wanted/latest](https://docs.npmjs.com/cli/outdated.html) versions available.
 
+> Note: depstime supports Node version >= 12.13.0
+
 ## Installation
 
 As a command line tool:

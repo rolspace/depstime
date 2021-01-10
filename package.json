@@ -17,6 +17,7 @@
   "bin": {
     "depstime": "bin/depstime"
   },
+  "files": ["dist"],
   "repository": {
     "type": "git",
     "url": "https://github.com/rolspace/depstime"

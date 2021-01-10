@@ -1,6 +1,6 @@
 {
   "name": "depstime",
-  "version": "0.5.5-0",
+  "version": "0.5.5-1",
   "author": "Rolando Ramos",
   "description": "Displays the time differences between the locally installed version of a package, the wanted version on your package.json configuration, and the latest available version.",
   "license": "MIT",
@@ -17,7 +17,9 @@
   "bin": {
     "depstime": "bin/depstime"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/rolspace/depstime"

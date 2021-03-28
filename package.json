@@ -25,28 +25,28 @@
     "url": "https://github.com/rolspace/depstime"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.10",
-    "@babel/core": "^7.12.10",
-    "@babel/preset-env": "^7.12.11",
-    "@babel/register": "^7.12.10",
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.13",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/register": "^7.13.8",
     "babel-plugin-add-module-exports": "^1.0.4",
-    "chai": "^4.2.0",
+    "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
-    "eslint": "^7.17.0",
+    "eslint": "^7.23.0",
     "eslint-config-standard": "^16.0.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-promise": "^4.3.1",
     "install": "^0.13.0",
-    "mocha": "^8.2.1",
+    "mocha": "^8.3.2",
     "nyc": "^15.1.0",
-    "sinon": "^9.2.3"
+    "sinon": "^9.2.4"
   },
   "dependencies": {
     "humanize-duration": "^3.25.1",
     "jsonfile": "^6.1.0",
     "moment": "^2.29.1",
-    "semver": "^7.3.4",
+    "semver": "^7.3.5",
     "yargs": "^16.2.0"
   }
 }

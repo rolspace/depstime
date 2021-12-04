@@ -1,6 +1,6 @@
 # depstime
 
-![Test/Build](https://github.com/rolspace/depstime/workflows/Test/Build/badge.svg)
+[![test-build](https://github.com/rolspace/depstime/actions/workflows/test-build.yml/badge.svg)](https://github.com/rolspace/depstime/actions/workflows/test-build.yml)
 
 **depstime** is a utility for analyzing dependencies and listing the time differences between the locally installed version of a package and the [wanted/latest](https://docs.npmjs.com/cli/outdated.html) versions available.
 

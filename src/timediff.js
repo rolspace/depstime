@@ -4,32 +4,33 @@ import moment from 'moment'
 import semver from 'semver'
 
 function measureTime (Timediff, dependencyData, useFullTime, useCompactTime) {
-  const { local: { version } } = Timediff
+  const { local: { version: packageJsonVersion } } = Timediff
+  const { time, version, versions } = dependencyData
 
-  const localVersion = semver.minSatisfying(dependencyData.versions, version)
-  const wantedVersion = semver.maxSatisfying(dependencyData.versions, version)
-  const latestVersion = dependencyData.version
+  const localVersion = semver.minSatisfying(versions, packageJsonVersion)
+  const wantedVersion = semver.maxSatisfying(versions, packageJsonVersion)
+  const latestVersion = version
 
-  const localVersionTime = dependencyData.time[localVersion]
-  const wantedVersionTime = dependencyData.time[wantedVersion]
-  const latestVersionTime = dependencyData.time[latestVersion]
+  const localVersionTime = time[localVersion]
+  const wantedVersionTime = time[wantedVersion]
+  const latestVersionTime = time[latestVersion]
 
-  const wantedMinusLocal = localVersionTime === wantedVersionTime
+  const wantedMinusLocalTime = localVersionTime === wantedVersionTime
     ? 0
     : moment(wantedVersionTime).valueOf() - moment(localVersionTime).valueOf()
 
-  const latestMinusLocal = localVersionTime === latestVersionTime
+  const latestMinusLocalTime = localVersionTime === latestVersionTime
     ? 0
     : moment(latestVersionTime).valueOf() - moment(localVersionTime).valueOf()
 
   const wanted = {
     version: wantedVersion,
-    time_diff: convertTime(wantedMinusLocal, useFullTime, useCompactTime),
+    time_diff: convertTime(wantedMinusLocalTime, useFullTime, useCompactTime),
   }
 
   const latest = {
     version: latestVersion,
-    time_diff: convertTime(latestMinusLocal, useFullTime, useCompactTime),
+    time_diff: convertTime(latestMinusLocalTime, useFullTime, useCompactTime),
   }
 
   return { ...Timediff, wanted, latest }
@@ -61,14 +62,18 @@ export async function process (Timediff, useNpm, useFullTime, useCompactTime) {
   const command = useNpm ? npmCommand : yarnCommand
 
   const commandResult = await new Promise((resolve, reject) => {
-    exec(`${command} ${Timediff.package} --json`, (error, stdout) => {
-      if (error) reject(error)
+    const { package: pkg } = Timediff
+    exec(`${command} ${pkg} --json`, (error, stdout) => {
+      if (error) {
+        reject(error)
+      }
 
       resolve(JSON.parse(stdout))
     })
   })
 
-  const dependencyData = useNpm ? commandResult : commandResult.data
+  const { data: commandResultData } = commandResult
+  const dependencyData = useNpm ? commandResult : commandResultData
 
   const updatedTimeDiff = measureTime(Timediff, dependencyData, useFullTime, useCompactTime)
 

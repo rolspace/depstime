@@ -23,7 +23,7 @@ export default async function cli () {
     .argv
 
   try {
-    const folder = options._[0]
+    const [folder] = options._
     const result = await depstime(folder, options)
 
     console.log(util.inspect(result, { colors: true, depth: null }))

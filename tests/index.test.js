@@ -7,7 +7,7 @@ import { depstime } from '../src/index'
 import * as timediff from '../src/timediff'
 
 chai.use(chaiAsPromised)
-const expect = chai.expect
+const { expect } = chai
 
 describe('depstime/index', () => {
   it('Cannot find package.json file, should reject', async () => {

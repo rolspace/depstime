@@ -6,7 +6,7 @@ import sinon from 'sinon'
 import * as timediff from '../src/timediff'
 
 chai.use(chaiAsPromised)
-const expect = chai.expect
+const { expect } = chai
 
 describe('depstime/timediff', () => {
   describe('create', () => {

@@ -1,9 +1,9 @@
-name: test-build
+name: ci
 
 on: [push]
 
 jobs:
-  test-build:
+  ci:
     runs-on: ubuntu-latest
     strategy:
       matrix:

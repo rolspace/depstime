@@ -14,6 +14,7 @@
   },
   "scripts": {
     "build": "babel src/ -d dist/",
+    "format": "prettier -w .",
     "lint": "eslint .",
     "prepublishOnly": "npm test && npm run build",
     "test": "nyc --reporter=text mocha --require @babel/register ./tests/**"
@@ -47,6 +48,7 @@
     "install": "^0.13.0",
     "mocha": "^9.1.3",
     "nyc": "^15.1.0",
+    "prettier-config-standard": "^7.0.0",
     "sinon": "^12.0.1"
   }
 }

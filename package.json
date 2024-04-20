@@ -41,7 +41,7 @@
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
     "eslint": "^8.5.0",
-    "eslint-config-standard": "^16.0.3",
+    "eslint-config-standard": "^17.1.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.0.0",

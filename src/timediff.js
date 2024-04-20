@@ -13,9 +13,9 @@ function measureTime(Timediff, dependencyData, useFullTime, useCompactTime) {
   const wantedVersion = semver.maxSatisfying(versions, packageJsonVersion)
   const latestVersion = version
 
-  const localVersionTime = time[localVersion]
-  const wantedVersionTime = time[wantedVersion]
-  const latestVersionTime = time[latestVersion]
+  const { [localVersion]: localVersionTime } = time
+  const { [wantedVersion]: wantedVersionTime } = time
+  const { [latestVersion]: latestVersionTime } = time
 
   const wantedMinusLocalTime =
     localVersionTime === wantedVersionTime

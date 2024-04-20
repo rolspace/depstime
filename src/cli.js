@@ -3,6 +3,7 @@ import yargs from 'yargs'
 import { depstime } from './index'
 
 export default async function cli() {
+  // eslint-disable-next-line prefer-destructuring
   const options = yargs
     .usage('$0 [folder]')
     .option('yarn', {
@@ -12,18 +13,19 @@ export default async function cli() {
     .option('compact', {
       alias: 'c',
       describe:
-        "Output time difference as a human readable value up to the 'days' unit with rounding",
+        'Output time difference as a human readable value up to the \'days\' unit with rounding',
       type: 'boolean',
     })
     .option('full', {
       alias: 'f',
       describe:
-        "Output time difference as a human readable value up to the 'seconds' unit with rounding",
+        'Output time difference as a human readable value up to the \'seconds\' unit with rounding',
       type: 'boolean',
     })
     .help('help', 'Show help message').argv
 
   try {
+    // eslint-disable-next-line prefer-destructuring
     const [folder] = options._
     const result = await depstime(folder, options)
 

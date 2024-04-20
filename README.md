@@ -26,9 +26,10 @@ npm install depstime --save
 > depstime [directory] [options]
 ```
 
-The directory argument must refer to a location that contains a  package.json file. If the directory argument is empty, depstime will be executed in the context of the current directory.
+The directory argument must refer to a location that contains a package.json file. If the directory argument is empty, depstime will be executed in the context of the current directory.
 
 Given a package.json file with the following dependencies properties:
+
 ```
 "dependencies": {
   "react": "^15.6.1",
@@ -39,6 +40,7 @@ Given a package.json file with the following dependencies properties:
   "mocha": "^3.5.2"
 }
 ```
+
 depstime will return the following output:
 
 ```
@@ -64,9 +66,9 @@ depstime will return the following output:
 }
 ```
 
-The *time_diff* property specifies the time difference in milliseconds between the various versions of a package.
+The _time_diff_ property specifies the time difference in milliseconds between the various versions of a package.
 
-The time difference is calculated by taking the publish time of the locally installed version from package.json (*local* property) and then, determining the time differences for the wanted version (*wanted*) and the latest version (*latest*) based on the versioning setup in package.json.
+The time difference is calculated by taking the publish time of the locally installed version from package.json (_local_ property) and then, determining the time differences for the wanted version (_wanted_) and the latest version (_latest_) based on the versioning setup in package.json.
 
 ## Options
 

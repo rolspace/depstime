@@ -4,7 +4,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  extends: ['plugin:react/recommended', 'standard'],
+  extends: ['standard'],
   overrides: [],
   parserOptions: {
     ecmaVersion: 'latest',

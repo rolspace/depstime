@@ -29,7 +29,9 @@ describe('depstime/index', () => {
 
     const result = depstime()
 
-    await expect(result).to.be.rejectedWith('There are no dependencies in the package.json file.')
+    await expect(result).to.be.rejectedWith(
+      'There are no dependencies in the package.json file.',
+    )
 
     jsonfileStub.restore()
   })
@@ -116,7 +118,8 @@ describe('depstime/index', () => {
             version: '4.0.0',
             time_diff: 11320472695,
           },
-        }],
+        },
+      ],
     }
 
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)

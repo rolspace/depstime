@@ -2,7 +2,7 @@ import util from 'util'
 import yargs from 'yargs'
 import { depstime } from './index'
 
-export default async function cli () {
+export default async function cli() {
   const options = yargs
     .usage('$0 [folder]')
     .option('yarn', {
@@ -11,16 +11,17 @@ export default async function cli () {
     })
     .option('compact', {
       alias: 'c',
-      describe: 'Output time difference as a human readable value up to the \'days\' unit with rounding',
+      describe:
+        "Output time difference as a human readable value up to the 'days' unit with rounding",
       type: 'boolean',
     })
     .option('full', {
       alias: 'f',
-      describe: 'Output time difference as a human readable value up to the \'seconds\' unit with rounding',
+      describe:
+        "Output time difference as a human readable value up to the 'seconds' unit with rounding",
       type: 'boolean',
     })
-    .help('help', 'Show help message')
-    .argv
+    .help('help', 'Show help message').argv
 
   try {
     const [folder] = options._

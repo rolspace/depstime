@@ -3,8 +3,10 @@ import humanize from 'humanize-duration'
 import moment from 'moment'
 import semver from 'semver'
 
-function measureTime (Timediff, dependencyData, useFullTime, useCompactTime) {
-  const { local: { version: packageJsonVersion } } = Timediff
+function measureTime(Timediff, dependencyData, useFullTime, useCompactTime) {
+  const {
+    local: { version: packageJsonVersion },
+  } = Timediff
   const { time, version, versions } = dependencyData
 
   const localVersion = semver.minSatisfying(versions, packageJsonVersion)
@@ -15,13 +17,15 @@ function measureTime (Timediff, dependencyData, useFullTime, useCompactTime) {
   const wantedVersionTime = time[wantedVersion]
   const latestVersionTime = time[latestVersion]
 
-  const wantedMinusLocalTime = localVersionTime === wantedVersionTime
-    ? 0
-    : moment(wantedVersionTime).valueOf() - moment(localVersionTime).valueOf()
+  const wantedMinusLocalTime =
+    localVersionTime === wantedVersionTime
+      ? 0
+      : moment(wantedVersionTime).valueOf() - moment(localVersionTime).valueOf()
 
-  const latestMinusLocalTime = localVersionTime === latestVersionTime
-    ? 0
-    : moment(latestVersionTime).valueOf() - moment(localVersionTime).valueOf()
+  const latestMinusLocalTime =
+    localVersionTime === latestVersionTime
+      ? 0
+      : moment(latestVersionTime).valueOf() - moment(localVersionTime).valueOf()
 
   const wanted = {
     version: wantedVersion,
@@ -36,7 +40,7 @@ function measureTime (Timediff, dependencyData, useFullTime, useCompactTime) {
   return { ...Timediff, wanted, latest }
 }
 
-function convertTime (timeDiff, useFullTime, useCompactTime) {
+function convertTime(timeDiff, useFullTime, useCompactTime) {
   if (useCompactTime) {
     return humanize(timeDiff, { round: true, units: ['y', 'mo', 'w', 'd'] })
   } else if (useFullTime) {
@@ -46,7 +50,7 @@ function convertTime (timeDiff, useFullTime, useCompactTime) {
   return timeDiff
 }
 
-export function create (dependencyName, dependencyVersion) {
+export function create(dependencyName, dependencyVersion) {
   return {
     package: dependencyName,
     local: {
@@ -55,7 +59,7 @@ export function create (dependencyName, dependencyVersion) {
   }
 }
 
-export async function process (Timediff, useNpm, useFullTime, useCompactTime) {
+export async function process(Timediff, useNpm, useFullTime, useCompactTime) {
   const npmCommand = 'npm view'
   const yarnCommand = 'yarn info'
 
@@ -75,7 +79,12 @@ export async function process (Timediff, useNpm, useFullTime, useCompactTime) {
   const { data: commandResultData } = commandResult
   const dependencyData = useNpm ? commandResult : commandResultData
 
-  const updatedTimeDiff = measureTime(Timediff, dependencyData, useFullTime, useCompactTime)
+  const updatedTimeDiff = measureTime(
+    Timediff,
+    dependencyData,
+    useFullTime,
+    useCompactTime,
+  )
 
   return updatedTimeDiff
 }

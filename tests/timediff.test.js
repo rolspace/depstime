@@ -63,7 +63,12 @@ describe('depstime/timediff', () => {
 
       const execMock = sinon.stub(child, 'exec').yields(undefined, execResult)
 
-      const result = await timediff.process(dependencyObject, true, false, false)
+      const result = await timediff.process(
+        dependencyObject,
+        true,
+        false,
+        false,
+      )
 
       expect(result).to.deep.equal(expected)
 

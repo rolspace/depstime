@@ -1,10 +1,10 @@
 # depstime
 
-[![test-build](https://github.com/rolspace/depstime/actions/workflows/test-build.yml/badge.svg)](https://github.com/rolspace/depstime/actions/workflows/test-build.yml)
+[![test-build](https://github.com/rolspace/depstime/actions/workflows/ci.yml/badge.svg)](https://github.com/rolspace/depstime/actions/workflows/ci.yml)
 
 **depstime** is a utility for analyzing dependencies and listing the time differences between the locally installed version of a package and the [wanted/latest](https://docs.npmjs.com/cli/outdated.html) versions available.
 
-> Note: depstime supports Node version >= 12.13.0
+> Note: depstime supports Node version >= 18.12.0
 
 ## Installation
 
@@ -68,7 +68,7 @@ depstime will return the following output:
 
 The _time_diff_ property specifies the time difference in milliseconds between the various versions of a package.
 
-The time difference is calculated by taking the publish time of the locally installed version from package.json (_local_ property) and then, determining the time differences for the wanted version (_wanted_) and the latest version (_latest_) based on the versioning setup in package.json.
+The time difference is calculated by taking the publish time of the locally installed version in package.json (_local_ property) and then, by determining the time differences for the wanted version (_wanted_) and the latest version (_latest_) based on the versioning setup in package.json.
 
 ## Options
 
@@ -77,3 +77,7 @@ The time difference is calculated by taking the publish time of the locally inst
 `--full, -f`: Converts the output of the time differences into a human readable string. The string shows the full time difference values up to the 'seconds' unit with rounding.
 
 `--yarn, -y`: Uses yarn instead of npm to retrieve dependency info.
+
+> [!IMPORTANT]
+> Only Yarn classic 1.x is supported. The command will fail if Yarn 2+ has already been setup inside a folder.
+> The command can be executed if it is run outside the folder where the package.json file is located and the path is added as a parameter to the command.

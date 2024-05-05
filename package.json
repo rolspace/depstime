@@ -33,10 +33,10 @@
     "yargs": "^17.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.16.0",
-    "@babel/core": "^7.16.5",
-    "@babel/preset-env": "^7.16.5",
-    "@babel/register": "^7.16.5",
+    "@babel/cli": "^7.24.5",
+    "@babel/core": "^7.24.5",
+    "@babel/preset-env": "^7.24.5",
+    "@babel/register": "^7.23.7",
     "babel-plugin-add-module-exports": "^1.0.4",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",

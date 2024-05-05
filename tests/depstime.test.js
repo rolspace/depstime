@@ -3,12 +3,12 @@ import chai from 'chai'
 import child from 'child_process'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import * as timediff from '../src/timediff'
+import * as depstime from '../src/depstime'
 
 chai.use(chaiAsPromised)
 const { expect } = chai
 
-describe('depstime/timediff', () => {
+describe('depstime/depstime', () => {
   describe('create', () => {
     it('Receives valid dependency name and version, should return the correct object', () => {
       const dependencyName = 'a'
@@ -21,7 +21,7 @@ describe('depstime/timediff', () => {
         },
       }
 
-      const result = timediff.create(dependencyName, dependencyVersion)
+      const result = depstime.create(dependencyName, dependencyVersion)
 
       expect(result).to.deep.equal(expected)
     })
@@ -63,7 +63,7 @@ describe('depstime/timediff', () => {
 
       const execMock = sinon.stub(child, 'exec').yields(undefined, execResult)
 
-      const result = await timediff.process(
+      const result = await depstime.process(
         dependencyObject,
         true,
         false,
@@ -84,7 +84,7 @@ describe('depstime/timediff', () => {
 
       const execMock = sinon.stub(child, 'exec').yields(new Error('Test Error'))
 
-      const result = timediff.process(dependencyObject, true, false, false)
+      const result = depstime.process(dependencyObject, true, false, false)
 
       await expect(result).to.be.rejected
 

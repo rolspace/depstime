@@ -1,8 +1,8 @@
 import jsonfile from 'jsonfile'
 import path from 'path'
-import * as timediff from './timediff'
+import * as depstime from './depstime'
 
-export async function depstime(folder, options) {
+export async function run(folder, options) {
   const packageJsonPath = path.join(folder || process.cwd(), 'package.json')
   const packageConfig = await jsonfile.readFile(packageJsonPath)
 
@@ -16,13 +16,13 @@ export async function depstime(folder, options) {
   }
 
   const results = Object.keys(dependencies)
-    .map((name) => timediff.create(name, dependencies[name]))
-    .map((Timediff) => {
+    .map((name) => depstime.create(name, dependencies[name]))
+    .map((deptime) => {
       const useNpm = options && !options.yarn
       const useFullTime = options && options.f && !options.c
       const useCompactTime = options && options.c && !options.f
 
-      return timediff.process(Timediff, useNpm, useFullTime, useCompactTime)
+      return depstime.process(deptime, useNpm, useFullTime, useCompactTime)
     })
 
   return {

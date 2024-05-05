@@ -1,6 +1,6 @@
 import util from 'util'
 import yargs from 'yargs'
-import { depstime } from './index'
+import { run } from './index'
 
 export default async function cli() {
   // eslint-disable-next-line prefer-destructuring
@@ -27,7 +27,7 @@ export default async function cli() {
   try {
     // eslint-disable-next-line prefer-destructuring
     const [folder] = options._
-    const result = await depstime(folder, options)
+    const result = await run(folder, options)
 
     console.log(util.inspect(result, { colors: true, depth: null }))
   } catch (error) {

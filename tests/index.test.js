@@ -3,8 +3,8 @@ import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import jsonfile from 'jsonfile'
 import sinon from 'sinon'
-import { depstime } from '../src/index'
-import * as timediff from '../src/timediff'
+import * as depstime from '../src/depstime'
+import { run } from '../src/index'
 
 chai.use(chaiAsPromised)
 const { expect } = chai
@@ -13,7 +13,7 @@ describe('depstime/index', () => {
   it('Cannot find package.json file, should reject', async () => {
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').rejects()
 
-    const result = depstime()
+    const result = run()
 
     await expect(result).to.be.rejected
 
@@ -27,7 +27,7 @@ describe('depstime/index', () => {
 
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
 
-    const result = depstime()
+    const result = run()
 
     await expect(result).to.be.rejectedWith(
       'There are no dependencies in the package.json file.',
@@ -123,15 +123,15 @@ describe('depstime/index', () => {
     }
 
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
-    const parseDependencyStub = sinon.stub(timediff, 'create')
+    const parseDependencyStub = sinon.stub(depstime, 'create')
     parseDependencyStub.onFirstCall().returns(parsedDependency1)
     parseDependencyStub.onSecondCall().returns(parsedDependency2)
 
-    const processDependencyStub = sinon.stub(timediff, 'process')
+    const processDependencyStub = sinon.stub(depstime, 'process')
     processDependencyStub.onFirstCall().resolves(processedDependency1)
     processDependencyStub.onSecondCall().resolves(processedDependency2)
 
-    const result = await depstime()
+    const result = await run()
 
     expect(result).to.deep.equal(expected)
 

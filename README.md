@@ -48,20 +48,20 @@ depstime will return the following output:
   dependencies: [{
     { package: 'react',
        local: { version: '^15.6.1' },
-       wanted: { version: '15.6.2', time_diff: 8899513061 },
-       latest: { version: '16.0.0', time_diff: 8956517049 } },
+       wanted: { version: '15.6.2', timeDiff: 8899513061 },
+       latest: { version: '16.0.0', timeDiff: 8956517049 } },
     { package: 'whatwg-fetch',
        local: { version: '^2.0.3' },
-       wanted: { version: '2.0.3', time_diff: 0 },
-       latest: { version: '2.0.3', time_diff: 0 } },
+       wanted: { version: '2.0.3', timeDiff: 0 },
+       latest: { version: '2.0.3', timeDiff: 0 } },
     { package: 'chai',
        local: { version: '^4.1.1' },
-       wanted: { version: '4.1.2', time_diff: 2297313699 },
-       latest: { version: '4.1.2', time_diff: 2297313699 } },
+       wanted: { version: '4.1.2', timeDiff: 2297313699 },
+       latest: { version: '4.1.2', timeDiff: 2297313699 } },
     { package: 'mocha',
        local: { version: '^3.5.2' },
-       wanted: { version: '3.5.3', time_diff: 86382478 },
-       latest: { version: '4.0.1', time_diff: 2177353840 } }
+       wanted: { version: '3.5.3', timeDiff: 86382478 },
+       latest: { version: '4.0.1', timeDiff: 2177353840 } }
   }]
 }
 ```

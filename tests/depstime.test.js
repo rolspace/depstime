@@ -8,14 +8,14 @@ import * as depstime from '../src/depstime'
 chai.use(chaiAsPromised)
 const { expect } = chai
 
-describe('depstime/depstime', () => {
+describe('depstime.js', () => {
   describe('create', () => {
     it('Receives valid dependency name and version, should return the correct object', () => {
       const dependencyName = 'a'
       const dependencyVersion = '1.0.0'
 
       const expected = {
-        package: 'a',
+        name: 'a',
         local: {
           version: '1.0.0',
         },
@@ -29,24 +29,24 @@ describe('depstime/depstime', () => {
   describe('process', () => {
     it('Receives a valid dependency object, should resolve with a modified dependency object with time differences', async () => {
       const dependencyObject = {
-        package: 'a',
+        name: 'a',
         local: {
           version: '^1.0.0',
         },
       }
 
       const expected = {
-        package: 'a',
+        name: 'a',
         local: {
           version: '^1.0.0',
         },
         wanted: {
           version: '1.2.0',
-          time_diff: 86382478,
+          timeDeltaToLocal: 86382478,
         },
         latest: {
           version: '2.0.0',
-          time_diff: 1923164678,
+          timeDeltaToLocal: 1923164678,
         },
       }
 
@@ -76,7 +76,7 @@ describe('depstime/depstime', () => {
     })
     it('Receives a dependency object and child_process.exec throws an error, should reject', async () => {
       const dependencyObject = {
-        package: 'a',
+        name: 'a',
         local: {
           version: '^1.0.0',
         },

@@ -9,7 +9,7 @@ import { run } from '../src/index'
 chai.use(chaiAsPromised)
 const { expect } = chai
 
-describe('depstime/index', () => {
+describe('index.js', () => {
   it('Cannot find package.json file, should reject', async () => {
     const jsonfileStub = sinon.stub(jsonfile, 'readFile').rejects()
 
@@ -61,62 +61,62 @@ describe('depstime/index', () => {
     }
 
     const processedDependency1 = {
-      package: 'a',
+      name: 'a',
       local: {
         version: '^1.2.1',
       },
       wanted: {
         version: '1.2.2',
-        time_diff: 86382478,
+        timeDeltaToLocal: 86382478,
       },
       latest: {
         version: '2.0.0',
-        time_diff: 1923164678,
+        timeDeltaToLocal: 1923164678,
       },
     }
     const processedDependency2 = {
-      package: 'b',
+      name: 'b',
       local: {
         version: '3.0.0',
       },
       wanted: {
         version: '3.0.0',
-        time_diff: 0,
+        timeDeltaToLocal: 0,
       },
       latest: {
         version: '4.0.0',
-        time_diff: 11320472695,
+        timeDeltaToLocal: 11320472695,
       },
     }
 
     const expected = {
       dependencies: [
         {
-          package: 'a',
+          name: 'a',
           local: {
             version: '^1.2.1',
           },
           wanted: {
             version: '1.2.2',
-            time_diff: 86382478,
+            timeDeltaToLocal: 86382478,
           },
           latest: {
             version: '2.0.0',
-            time_diff: 1923164678,
+            timeDeltaToLocal: 1923164678,
           },
         },
         {
-          package: 'b',
+          name: 'b',
           local: {
             version: '3.0.0',
           },
           wanted: {
             version: '3.0.0',
-            time_diff: 0,
+            timeDeltaToLocal: 0,
           },
           latest: {
             version: '4.0.0',
-            time_diff: 11320472695,
+            timeDeltaToLocal: 11320472695,
           },
         },
       ],

@@ -3,72 +3,88 @@ import humanize from 'humanize-duration'
 import moment from 'moment'
 import semver from 'semver'
 
-function measureTime(deptime, dependencyData, useFullTime, useCompactTime) {
+function getVersionsTimeDeltas(
+  dependencyTime,
+  dependencyData,
+  useFullTime,
+  useCompactTime,
+) {
   const {
-    local: { version: packageJsonVersion },
-  } = deptime
+    local: { version: currentVersion },
+  } = dependencyTime
 
-  const { time, version, versions } = dependencyData
+  const { time: dependencyTimeData, version, versions } = dependencyData
 
-  const localVersion = semver.minSatisfying(versions, packageJsonVersion)
-  const wantedVersion = semver.maxSatisfying(versions, packageJsonVersion)
+  const localVersion = semver.minSatisfying(versions, currentVersion)
+  const wantedVersion = semver.maxSatisfying(versions, currentVersion)
   const latestVersion = version
 
-  const { [localVersion]: localVersionTime } = time
-  const { [wantedVersion]: wantedVersionTime } = time
-  const { [latestVersion]: latestVersionTime } = time
+  const { [localVersion]: localVersionPublishTime } = dependencyTimeData
+  const { [wantedVersion]: wantedVersionPublishTime } = dependencyTimeData
+  const { [latestVersion]: latestVersionPublishTime } = dependencyTimeData
 
-  const wantedMinusLocalTime =
-    localVersionTime === wantedVersionTime
-      ? 0
-      : moment(wantedVersionTime).valueOf() - moment(localVersionTime).valueOf()
+  const timeDeltaWantedToLocalPublishTime =
+    moment(wantedVersionPublishTime).valueOf() -
+    moment(localVersionPublishTime).valueOf()
 
-  const latestMinusLocalTime =
-    localVersionTime === latestVersionTime
-      ? 0
-      : moment(latestVersionTime).valueOf() - moment(localVersionTime).valueOf()
+  const timeDeltaLatestToLocalPublishTime =
+    moment(latestVersionPublishTime).valueOf() -
+    moment(localVersionPublishTime).valueOf()
 
   const wanted = {
     version: wantedVersion,
-    timeDiff: convertTime(wantedMinusLocalTime, useFullTime, useCompactTime),
+    timeDeltaToLocal: humanizeTime(
+      timeDeltaWantedToLocalPublishTime,
+      useFullTime,
+      useCompactTime,
+    ),
   }
 
   const latest = {
     version: latestVersion,
-    timeDiff: convertTime(latestMinusLocalTime, useFullTime, useCompactTime),
+    timeDeltaToLocal: humanizeTime(
+      timeDeltaLatestToLocalPublishTime,
+      useFullTime,
+      useCompactTime,
+    ),
   }
 
-  return { ...deptime, wanted, latest }
+  return { ...dependencyTime, wanted, latest }
 }
 
-function convertTime(deptime, useFullTime, useCompactTime) {
+function humanizeTime(dependencyTime, useFullTime, useCompactTime) {
   if (useCompactTime) {
-    return humanize(deptime, { round: true, units: ['y', 'mo', 'w', 'd'] })
+    return humanize(dependencyTime, {
+      round: true,
+      units: ['y', 'mo', 'w', 'd'],
+    })
   } else if (useFullTime) {
-    return humanize(deptime, { round: true })
+    return humanize(dependencyTime, { round: true })
   }
 
-  return deptime
+  return dependencyTime
 }
 
 export function create(dependencyName, dependencyVersion) {
   return {
-    package: dependencyName,
+    name: dependencyName,
     local: {
       version: dependencyVersion,
     },
   }
 }
 
-export async function process(deptime, useNpm, useFullTime, useCompactTime) {
-  const npmCommand = 'npm view'
-  const yarnCommand = 'yarn info'
-
-  const command = useNpm ? npmCommand : yarnCommand
+export async function process(
+  dependencyTime,
+  useNpm,
+  useFullTime,
+  useCompactTime,
+) {
+  const getDependencyCommand = useNpm ? 'npm view' : 'yarn info'
 
   const commandResult = await new Promise((resolve, reject) => {
-    const { package: pkg } = deptime
-    exec(`${command} ${pkg} --json`, (error, stdout) => {
+    const { name } = dependencyTime
+    exec(`${getDependencyCommand} ${name} --json`, (error, stdout) => {
       if (error) {
         reject(error)
       }
@@ -77,15 +93,17 @@ export async function process(deptime, useNpm, useFullTime, useCompactTime) {
     })
   })
 
-  const { data: commandResultData } = commandResult
-  const dependencyData = useNpm ? commandResult : commandResultData
+  const npmDependencyData = commandResult
+  const { data: yarnDependencyData } = commandResult
 
-  const updatedDeptime = measureTime(
-    deptime,
+  const dependencyData = useNpm ? npmDependencyData : yarnDependencyData
+
+  const dependencyTimeWithDeltas = getVersionsTimeDeltas(
+    dependencyTime,
     dependencyData,
     useFullTime,
     useCompactTime,
   )
 
-  return updatedDeptime
+  return dependencyTimeWithDeltas
 }

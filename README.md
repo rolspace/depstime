@@ -76,6 +76,9 @@ The time difference is calculated by taking the publish time of the locally inst
 
 `--full, -f`: Converts the output of the time differences into a human readable string. The string shows the full time difference values up to the 'seconds' unit with rounding.
 
+> [!IMPORTANT]
+> Both `-c` and `-f` options cannot be used together, if both are set, the `-c` option will be used.
+
 `--yarn, -y`: Uses yarn instead of npm to retrieve dependency info.
 
 > [!IMPORTANT]

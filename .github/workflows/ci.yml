@@ -1,4 +1,5 @@
 name: ci
+run-name: Run CI
 
 on: [push]
 

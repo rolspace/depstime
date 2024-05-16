@@ -1,7 +1,15 @@
 name: ci
 run-name: Run CI
 
-on: [push]
+on:
+  push:
+    paths-ignore:
+      - .editorconfig
+      - .prettierignore
+      - .prettier.js
+      - CHANGELOG.md
+      - LICENSE
+      - README.md
 
 jobs:
   ci:

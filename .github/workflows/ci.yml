@@ -12,11 +12,14 @@ on:
       - README.md
 
 jobs:
-  ci:
+  ci-build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         node: [18, 20]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,3 +40,43 @@ jobs:
 
       - name: Build
         run: npm run build
+
+  ci-sonar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.12.x
+
+      - name: npm Install
+        run: npm ci
+
+      - name: Test with coverage
+        run: npm run testWithCoverage
+
+      - name: Get current version
+        id: version
+        run: |
+          echo "value=$(npm pkg get version --workspaces=false | tr -d \")" >> "$GITHUB_OUTPUT"
+
+      - name: Get current commit
+        id: commit
+        run: |
+          echo "value=$(echo ${{ github.sha }} | sed 's/\(.\{7\}\).*/\1/')" >> "$GITHUB_OUTPUT"
+
+      - name: Analyze with SonarCloud
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.projectVersion=${{ steps.version.outputs.value }}-${{ steps.commit.outputs.value }}

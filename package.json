@@ -17,7 +17,8 @@
     "format": "prettier -w .",
     "lint": "eslint .",
     "prepublishOnly": "npm test && npm run build",
-    "test": "nyc --reporter=text mocha --require @babel/register ./tests/**"
+    "test": "mocha --require @babel/register ./tests/**",
+    "testWithCoverage": "nyc --reporter lcov --reporter=text mocha --require @babel/register ./tests/**"
   },
   "bin": {
     "depstime": "bin/depstime"

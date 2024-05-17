@@ -1,6 +1,6 @@
 # depstime
 
-[![test-build](https://github.com/rolspace/depstime/actions/workflows/ci.yml/badge.svg)](https://github.com/rolspace/depstime/actions/workflows/ci.yml)
+[![ci](https://github.com/rolspace/depstime/actions/workflows/ci.yml/badge.svg)](https://github.com/rolspace/depstime/actions/workflows/ci.yml) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rolspace_depstime&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rolspace_depstime) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=rolspace_depstime&metric=coverage)](https://sonarcloud.io/summary/new_code?id=rolspace_depstime)
 
 **depstime** is a utility for analyzing dependencies and listing the time differences between the locally installed version of a package and the [wanted/latest](https://docs.npmjs.com/cli/outdated.html) versions available.
 

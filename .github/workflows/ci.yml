@@ -6,7 +6,7 @@ on:
     paths-ignore:
       - .editorconfig
       - .prettierignore
-      - .prettier.js
+      - .prettier.cjs
       - CHANGELOG.md
       - LICENSE
       - README.md
@@ -37,9 +37,6 @@ jobs:
 
       - name: Test
         run: npm test
-
-      - name: Build
-        run: npm run build
 
   ci-sonar:
     runs-on: ubuntu-latest

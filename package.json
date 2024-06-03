@@ -14,12 +14,11 @@
     "url": "git+https://github.com/rolspace/depstime.git"
   },
   "scripts": {
-    "build": "babel src/ -d dist/",
     "format": "prettier -w .",
     "lint": "eslint .",
-    "prepublishOnly": "npm test && npm run build",
-    "test": "mocha --require @babel/register ./tests/**",
-    "testWithCoverage": "nyc --reporter lcov --reporter=text mocha --require @babel/register ./tests/**"
+    "prepublishOnly": "npm test",
+    "test": "mocha ./tests/**",
+    "testWithCoverage": "c8 --reporter lcov --reporter=text mocha ./tests/**"
   },
   "bin": {
     "depstime": "bin/depstime"
@@ -35,11 +34,7 @@
     "yargs": "^17.3.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.24.5",
-    "@babel/core": "^7.24.5",
-    "@babel/preset-env": "^7.24.5",
-    "@babel/register": "^7.23.7",
-    "babel-plugin-add-module-exports": "^1.0.4",
+    "c8": "^9.1.0",
     "chai": "^5.1.1",
     "chai-as-promised": "^7.1.2",
     "eslint": "^8.57.0",
@@ -47,9 +42,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "install": "^0.13.0",
     "mocha": "^10.4.0",
-    "nyc": "^15.1.0",
     "prettier-config-standard": "^7.0.0",
     "sinon": "^18.0.0"
   }

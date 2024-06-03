@@ -1,3 +1,5 @@
 #!/usr/bin/env node
 
-require('../dist/cli')()
+import cli from '../src/cli.js'
+
+cli()

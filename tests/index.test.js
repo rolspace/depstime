@@ -1,23 +1,22 @@
-/* global describe it */
-import chai from 'chai'
+import * as chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
-import jsonfile from 'jsonfile'
 import sinon from 'sinon'
-import * as depstime from '../src/depstime'
-import { run } from '../src/index'
+import { run } from '../src/index.js'
 
 chai.use(chaiAsPromised)
 const { expect } = chai
 
 describe('index.js', () => {
-  it('Cannot find package.json file, should reject', async () => {
-    const jsonfileStub = sinon.stub(jsonfile, 'readFile').rejects()
+  afterEach(() => {
+    sinon.restore()
+  })
 
-    const result = run()
+  it('Cannot find package.json file, should reject', async () => {
+    const readPackageFileFake = sinon.fake.rejects()
+
+    const result = run(null, null, { readPackageFile: readPackageFileFake })
 
     await expect(result).to.be.rejected
-
-    jsonfileStub.restore()
   })
 
   it('No dependencies found in package.json file, should reject with a specific error', async () => {
@@ -25,15 +24,13 @@ describe('index.js', () => {
       name: 'depstime',
     }
 
-    const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
+    const readPackageFileFake = sinon.fake.resolves(packageObj)
 
-    const result = run()
+    const result = run(null, null, { readPackageFile: readPackageFileFake })
 
     await expect(result).to.be.rejectedWith(
       'There are no dependencies in the package.json file.',
     )
-
-    jsonfileStub.restore()
   })
 
   it('Dependencies found in package.json file, should resolve with correct data', async () => {
@@ -47,20 +44,20 @@ describe('index.js', () => {
       },
     }
 
-    const parsedDependency1 = {
+    const firstCreatedDepstime = {
       package: 'a',
       local: {
         version: '^1.2.1',
       },
     }
-    const parsedDependency2 = {
+    const secondCreatedDepstime = {
       package: 'b',
       local: {
         version: '3.0.0',
       },
     }
 
-    const processedDependency1 = {
+    const firstProcessedDepstime = {
       name: 'a',
       local: {
         version: '^1.2.1',
@@ -74,7 +71,7 @@ describe('index.js', () => {
         timeDeltaToLocal: 1923164678,
       },
     }
-    const processedDependency2 = {
+    const secondProcessedDepstime = {
       name: 'b',
       local: {
         version: '3.0.0',
@@ -122,21 +119,21 @@ describe('index.js', () => {
       ],
     }
 
-    const jsonfileStub = sinon.stub(jsonfile, 'readFile').resolves(packageObj)
-    const parseDependencyStub = sinon.stub(depstime, 'create')
-    parseDependencyStub.onFirstCall().returns(parsedDependency1)
-    parseDependencyStub.onSecondCall().returns(parsedDependency2)
+    const readPackageFileFake = sinon.fake.resolves(packageObj)
+    const createDepstimeStub = sinon.stub()
+    createDepstimeStub.onFirstCall().returns(firstCreatedDepstime)
+    createDepstimeStub.onSecondCall().returns(secondCreatedDepstime)
 
-    const processDependencyStub = sinon.stub(depstime, 'process')
-    processDependencyStub.onFirstCall().resolves(processedDependency1)
-    processDependencyStub.onSecondCall().resolves(processedDependency2)
+    const processDepstimesStub = sinon.stub()
+    processDepstimesStub.onFirstCall().resolves(firstProcessedDepstime)
+    processDepstimesStub.onSecondCall().resolves(secondProcessedDepstime)
 
-    const result = await run()
+    const result = await run(null, null, {
+      readPackageFile: readPackageFileFake,
+      createDepstime: createDepstimeStub,
+      processDepstimes: processDepstimesStub,
+    })
 
     expect(result).to.deep.equal(expected)
-
-    jsonfileStub.restore()
-    parseDependencyStub.restore()
-    processDependencyStub.restore()
   })
 })

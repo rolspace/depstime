@@ -1,10 +1,15 @@
-import jsonfile from 'jsonfile'
+import { exec } from 'child_process'
+import humanize from 'humanize-duration'
+import moment from 'moment'
 import path from 'path'
-import * as depstime from './depstime'
+import { maxSatisfying, minSatisfying } from 'semver'
 
-export async function run(folder, options) {
+export async function run(folder, options, functionDependencies) {
+  const { readPackageFile, createDepstime, processDepstimes } =
+    functionDependencies
+
   const packageJsonPath = path.join(folder || process.cwd(), 'package.json')
-  const packageJsonObject = await jsonfile.readFile(packageJsonPath)
+  const packageJsonObject = await readPackageFile(packageJsonPath)
 
   if (!packageJsonObject.dependencies && !packageJsonObject.devDependencies) {
     throw new Error('There are no dependencies in the package.json file.')
@@ -15,18 +20,27 @@ export async function run(folder, options) {
     ...packageJsonObject.devDependencies,
   }
 
+  const processDependencies = {
+    execute: exec,
+    getTime: moment,
+    getMinVersion: minSatisfying,
+    getMaxVersion: maxSatisfying,
+    humanizeTime: humanize,
+  }
+
   const results = Object.keys(dependencies)
-    .map((name) => depstime.create(name, dependencies[name]))
-    .map((dependencyTime) => {
+    .map((name) => createDepstime(name, dependencies[name]))
+    .map((depstime) => {
       const useNpm = options && !options.yarn
       const useFullTime = options && options.f && !options.c
       const useCompactTime = options && options.c && !options.f
 
-      return depstime.process(
-        dependencyTime,
+      return processDepstimes(
+        depstime,
         useNpm,
         useFullTime,
         useCompactTime,
+        processDependencies,
       )
     })
 

@@ -1,68 +1,68 @@
-import { exec } from 'child_process'
-import humanize from 'humanize-duration'
-import moment from 'moment'
-import semver from 'semver'
-
-function getVersionsTimeDeltas(
-  dependencyTime,
+function getVersionsTimeDifferences(
+  depstime,
   dependencyData,
   useFullTime,
   useCompactTime,
+  functionDependencies,
 ) {
   const {
     local: { version: currentVersion },
-  } = dependencyTime
+  } = depstime
 
-  const { time: dependencyTimeData, version, versions } = dependencyData
+  const { time: versionTimeData, version, versions } = dependencyData
 
-  const localVersion = semver.minSatisfying(versions, currentVersion)
-  const wantedVersion = semver.maxSatisfying(versions, currentVersion)
+  const { getTime, getMinVersion, getMaxVersion } = functionDependencies
+
+  const localVersion = getMinVersion(versions, currentVersion)
+  const wantedVersion = getMaxVersion(versions, currentVersion)
   const latestVersion = version
 
-  const { [localVersion]: localVersionPublishTime } = dependencyTimeData
-  const { [wantedVersion]: wantedVersionPublishTime } = dependencyTimeData
-  const { [latestVersion]: latestVersionPublishTime } = dependencyTimeData
+  const { [localVersion]: localVersionPublishTime } = versionTimeData
+  const { [wantedVersion]: wantedVersionPublishTime } = versionTimeData
+  const { [latestVersion]: latestVersionPublishTime } = versionTimeData
 
-  const timeDeltaWantedToLocalPublishTime =
-    moment(wantedVersionPublishTime).valueOf() -
-    moment(localVersionPublishTime).valueOf()
+  const timeDifferenceWantedToLocalVersionPublishTime =
+    getTime(wantedVersionPublishTime).valueOf() -
+    getTime(localVersionPublishTime).valueOf()
 
-  const timeDeltaLatestToLocalPublishTime =
-    moment(latestVersionPublishTime).valueOf() -
-    moment(localVersionPublishTime).valueOf()
+  const timeDifferenceLatestToLocalVersionPublishTime =
+    getTime(latestVersionPublishTime).valueOf() -
+    getTime(localVersionPublishTime).valueOf()
 
   const wanted = {
     version: wantedVersion,
-    timeDeltaToLocal: humanizeTime(
-      timeDeltaWantedToLocalPublishTime,
+    timeDifferenceToLocalVersion: humanize(
+      timeDifferenceWantedToLocalVersionPublishTime,
       useFullTime,
       useCompactTime,
+      functionDependencies,
     ),
   }
 
   const latest = {
     version: latestVersion,
-    timeDeltaToLocal: humanizeTime(
-      timeDeltaLatestToLocalPublishTime,
+    timeDifferenceToLocalVersion: humanize(
+      timeDifferenceLatestToLocalVersionPublishTime,
       useFullTime,
       useCompactTime,
+      functionDependencies,
     ),
   }
 
-  return { ...dependencyTime, wanted, latest }
+  return { ...depstime, wanted, latest }
 }
 
-function humanizeTime(dependencyTime, useFullTime, useCompactTime) {
+function humanize(time, useFullTime, useCompactTime, { humanizeTime }) {
   if (useCompactTime) {
-    return humanize(dependencyTime, {
+    return humanizeTime(time, {
       round: true,
       units: ['y', 'mo', 'w', 'd'],
     })
   } else if (useFullTime) {
-    return humanize(dependencyTime, { round: true })
+    return humanizeTime(time, { round: true })
   }
 
-  return dependencyTime
+  return time
 }
 
 export function create(dependencyName, dependencyVersion) {
@@ -75,16 +75,18 @@ export function create(dependencyName, dependencyVersion) {
 }
 
 export async function process(
-  dependencyTime,
+  depstime,
   useNpm,
   useFullTime,
   useCompactTime,
+  functionDependencies,
 ) {
+  const { execute } = functionDependencies
   const getDependencyCommand = useNpm ? 'npm view' : 'yarn info'
 
   const commandResult = await new Promise((resolve, reject) => {
-    const { name } = dependencyTime
-    exec(`${getDependencyCommand} ${name} --json`, (error, stdout) => {
+    const { name } = depstime
+    execute(`${getDependencyCommand} ${name} --json`, (error, stdout) => {
       if (error) {
         reject(error)
       }
@@ -98,12 +100,13 @@ export async function process(
 
   const dependencyData = useNpm ? npmDependencyData : yarnDependencyData
 
-  const dependencyTimeWithDeltas = getVersionsTimeDeltas(
-    dependencyTime,
+  const depstimeWithDifferences = getVersionsTimeDifferences(
+    depstime,
     dependencyData,
     useFullTime,
     useCompactTime,
+    functionDependencies,
   )
 
-  return dependencyTimeWithDeltas
+  return depstimeWithDifferences
 }

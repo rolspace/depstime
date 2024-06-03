@@ -1,10 +1,12 @@
+import jsonfile from 'jsonfile'
 import util from 'util'
 import yargs from 'yargs'
-import { run } from './index'
+import { create, process } from './depstime.js'
+import { run } from './index.js'
 
 export default async function cli() {
   // eslint-disable-next-line prefer-destructuring
-  const options = yargs
+  const options = yargs()
     .usage('$0 [folder]')
     .option('yarn', {
       describe: 'use yarn instead of npm',
@@ -27,7 +29,14 @@ export default async function cli() {
   try {
     // eslint-disable-next-line prefer-destructuring
     const [folder] = options._
-    const result = await run(folder, options)
+
+    const { readFile } = jsonfile
+    const runDependencies = {
+      readPackageFile: readFile,
+      createDepstime: create,
+      processDepstimes: process,
+    }
+    const result = await run(folder, options, runDependencies)
 
     console.log(util.inspect(result, { colors: true, depth: null }))
   } catch (error) {

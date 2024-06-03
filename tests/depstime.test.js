@@ -1,14 +1,16 @@
-/* global describe it */
-import chai from 'chai'
-import child from 'child_process'
+import * as chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import sinon from 'sinon'
-import * as depstime from '../src/depstime'
+import { create, process } from '../src/depstime.js'
 
 chai.use(chaiAsPromised)
 const { expect } = chai
 
 describe('depstime.js', () => {
+  afterEach(() => {
+    sinon.restore()
+  })
+
   describe('create', () => {
     it('Receives valid dependency name and version, should return the correct object', () => {
       const dependencyName = 'a'
@@ -21,11 +23,12 @@ describe('depstime.js', () => {
         },
       }
 
-      const result = depstime.create(dependencyName, dependencyVersion)
+      const result = create(dependencyName, dependencyVersion)
 
       expect(result).to.deep.equal(expected)
     })
   })
+
   describe('process', () => {
     it('Receives a valid dependency object, should resolve with a modified dependency object with time differences', async () => {
       const dependencyObject = {
@@ -42,15 +45,15 @@ describe('depstime.js', () => {
         },
         wanted: {
           version: '1.2.0',
-          timeDeltaToLocal: 86382478,
+          timeDifferenceToLocalVersion: 86382478,
         },
         latest: {
           version: '2.0.0',
-          timeDeltaToLocal: 1923164678,
+          timeDifferenceToLocalVersion: 1923164678,
         },
       }
 
-      const execResult = JSON.stringify({
+      const executeFakeResult = JSON.stringify({
         name: 'a',
         version: '2.0.0',
         versions: ['1.0.0', '1.2.0', '2.0.0'],
@@ -61,19 +64,39 @@ describe('depstime.js', () => {
         },
       })
 
-      const execMock = sinon.stub(child, 'exec').yields(undefined, execResult)
+      const executeFake = sinon.fake.yields(undefined, executeFakeResult)
+      const getTimeFake = sinon.fake((dateTimeString) => {
+        return {
+          valueOf: () => {
+            const date = new Date(dateTimeString)
 
-      const result = await depstime.process(
+            if (isNaN(date.getTime())) {
+              throw new Error('Invalid date-time string')
+            }
+
+            const milliseconds = date.getTime()
+
+            return milliseconds
+          },
+        }
+      })
+
+      const result = await process(
         dependencyObject,
         true,
         false,
         false,
+        {
+          execute: executeFake,
+          getTime: getTimeFake,
+          getMinVersion: sinon.fake.returns('1.0.0'),
+          getMaxVersion: sinon.fake.returns('1.2.0'),
+        },
       )
 
       expect(result).to.deep.equal(expected)
-
-      execMock.restore()
     })
+
     it('Receives a dependency object and child_process.exec throws an error, should reject', async () => {
       const dependencyObject = {
         name: 'a',
@@ -82,13 +105,11 @@ describe('depstime.js', () => {
         },
       }
 
-      const execMock = sinon.stub(child, 'exec').yields(new Error('Test Error'))
+      const executeFake = sinon.fake.yields(new Error('Test Error'))
 
-      const result = depstime.process(dependencyObject, true, false, false)
+      const result = process(dependencyObject, true, false, false, { execute: executeFake })
 
       await expect(result).to.be.rejected
-
-      execMock.restore()
     })
   })
 })

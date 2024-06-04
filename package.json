@@ -29,7 +29,6 @@
   "dependencies": {
     "humanize-duration": "^3.27.1",
     "jsonfile": "^6.1.0",
-    "moment": "^2.29.1",
     "semver": "^7.3.5",
     "yargs": "^17.3.0"
   },

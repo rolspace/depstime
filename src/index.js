@@ -1,8 +1,8 @@
 import { exec } from 'child_process'
 import humanize from 'humanize-duration'
-import moment from 'moment'
 import path from 'path'
 import { maxSatisfying, minSatisfying } from 'semver'
+import { getTime } from './time.js'
 
 export async function run(folder, options, functionDependencies) {
   const { readPackageFile, createDepstime, processDepstimes } =
@@ -22,7 +22,7 @@ export async function run(folder, options, functionDependencies) {
 
   const processDependencies = {
     execute: exec,
-    getTime: moment,
+    getTime,
     getMinVersion: minSatisfying,
     getMaxVersion: maxSatisfying,
     humanizeTime: humanize,

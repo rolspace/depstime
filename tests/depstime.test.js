@@ -65,21 +65,11 @@ describe('depstime.js', () => {
       })
 
       const executeFake = sinon.fake.yields(undefined, executeFakeResult)
-      const getTimeFake = sinon.fake((dateTimeString) => {
-        return {
-          valueOf: () => {
-            const date = new Date(dateTimeString)
-
-            if (isNaN(date.getTime())) {
-              throw new Error('Invalid date-time string')
-            }
-
-            const milliseconds = date.getTime()
-
-            return milliseconds
-          },
-        }
-      })
+      const getTimeStub = sinon.stub()
+      getTimeStub.onFirstCall().returns(1536701090236)
+      getTimeStub.onSecondCall().returns(1536614707758)
+      getTimeStub.onThirdCall().returns(1538537872436)
+      getTimeStub.onCall(3).returns(1536614707758)
 
       const result = await process(
         dependencyObject,
@@ -88,7 +78,7 @@ describe('depstime.js', () => {
         false,
         {
           execute: executeFake,
-          getTime: getTimeFake,
+          getTime: getTimeStub,
           getMinVersion: sinon.fake.returns('1.0.0'),
           getMaxVersion: sinon.fake.returns('1.2.0'),
         },

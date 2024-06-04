@@ -45,11 +45,11 @@ describe('depstime.js', () => {
         },
         wanted: {
           version: '1.2.0',
-          timeDifferenceToLocalVersion: 86382478,
+          timeDifference: 86382478,
         },
         latest: {
           version: '2.0.0',
-          timeDifferenceToLocalVersion: 1923164678,
+          timeDifference: 1923164678,
         },
       }
 

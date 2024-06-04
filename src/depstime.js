@@ -31,7 +31,7 @@ function getVersionsTimeDifferences(
 
   const wanted = {
     version: wantedVersion,
-    timeDifferenceToLocalVersion: humanize(
+    timeDifference: humanize(
       timeDifferenceWantedToLocalVersionPublishTime,
       useFullTime,
       useCompactTime,
@@ -41,7 +41,7 @@ function getVersionsTimeDifferences(
 
   const latest = {
     version: latestVersion,
-    timeDifferenceToLocalVersion: humanize(
+    timeDifference: humanize(
       timeDifferenceLatestToLocalVersionPublishTime,
       useFullTime,
       useCompactTime,

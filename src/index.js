@@ -4,11 +4,11 @@ import path from 'path'
 import { maxSatisfying, minSatisfying } from 'semver'
 import { getTime } from './time.js'
 
-export async function run(folder, options, functionDependencies) {
+export async function run(directoryPath, options, functionDependencies) {
   const { readPackageFile, createDepstime, processDepstimes } =
     functionDependencies
 
-  const packageJsonPath = path.join(folder || process.cwd(), 'package.json')
+  const packageJsonPath = path.join(directoryPath || process.cwd(), 'package.json')
   const packageJsonObject = await readPackageFile(packageJsonPath)
 
   if (!packageJsonObject.dependencies && !packageJsonObject.devDependencies) {

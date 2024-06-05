@@ -31,9 +31,9 @@ export async function run(folder, options, functionDependencies) {
   const results = Object.keys(dependencies)
     .map((name) => createDepstime(name, dependencies[name]))
     .map((depstime) => {
-      const useNpm = options && !options.yarn
-      const useFullTime = options && options.f && !options.c
-      const useCompactTime = options && options.c && !options.f
+      const useNpm = !options?.yarn
+      const useFullTime = options?.f && !options?.c
+      const useCompactTime = options?.c && !options?.f
 
       return processDepstimes(
         depstime,

@@ -8,7 +8,10 @@ export async function run(directoryPath, options, functionDependencies) {
   const { readPackageFile, createDepstime, processDepstimes } =
     functionDependencies
 
-  const packageJsonPath = path.join(directoryPath || process.cwd(), 'package.json')
+  const packageJsonPath = path.join(
+    directoryPath || process.cwd(),
+    'package.json',
+  )
   const packageJsonObject = await readPackageFile(packageJsonPath)
 
   if (!packageJsonObject.dependencies && !packageJsonObject.devDependencies) {

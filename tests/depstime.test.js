@@ -71,18 +71,12 @@ describe('depstime.js', () => {
       getTimeStub.onThirdCall().returns(1538537872436)
       getTimeStub.onCall(3).returns(1536614707758)
 
-      const result = await process(
-        dependencyObject,
-        true,
-        false,
-        false,
-        {
-          execute: executeFake,
-          getTime: getTimeStub,
-          getMinVersion: sinon.fake.returns('1.0.0'),
-          getMaxVersion: sinon.fake.returns('1.2.0'),
-        },
-      )
+      const result = await process(dependencyObject, true, false, false, {
+        execute: executeFake,
+        getTime: getTimeStub,
+        getMinVersion: sinon.fake.returns('1.0.0'),
+        getMaxVersion: sinon.fake.returns('1.2.0'),
+      })
 
       expect(result).to.deep.equal(expected)
     })
@@ -97,7 +91,9 @@ describe('depstime.js', () => {
 
       const executeFake = sinon.fake.yields(new Error('Test Error'))
 
-      const result = process(dependencyObject, true, false, false, { execute: executeFake })
+      const result = process(dependencyObject, true, false, false, {
+        execute: executeFake,
+      })
 
       await expect(result).to.be.rejected
     })

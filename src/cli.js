@@ -7,12 +7,17 @@ import { run } from './index.js'
 
 export default async function cli() {
   const commandDefinition = yargs(hideBin(process.argv))
-    .command('$0 [directoryPath]', 'Calculate the time differences in your package.json dependencies with the wanted/latest versions', (yargs) => {
-      yargs.positional('[directoryPath]', {
-        describe: 'Path of the directory where the package.json file is located',
-        default: '.',
-      })
-    })
+    .command(
+      '$0 [directoryPath]',
+      'Calculate the time differences in your package.json dependencies with the wanted/latest versions',
+      (yargs) => {
+        yargs.positional('[directoryPath]', {
+          describe:
+            'Path of the directory where the package.json file is located',
+          default: '.',
+        })
+      },
+    )
     .option('yarn', {
       describe: 'use yarn instead of npm',
       type: 'boolean',

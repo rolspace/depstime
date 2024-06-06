@@ -22,12 +22,10 @@ function getVersionsTimeDifferences(
   const { [latestVersion]: latestVersionPublishTime } = versionTimeData
 
   const timeDifferenceWantedToLocalVersionPublishTime =
-    getTime(wantedVersionPublishTime) -
-    getTime(localVersionPublishTime)
+    getTime(wantedVersionPublishTime) - getTime(localVersionPublishTime)
 
   const timeDifferenceLatestToLocalVersionPublishTime =
-    getTime(latestVersionPublishTime) -
-    getTime(localVersionPublishTime)
+    getTime(latestVersionPublishTime) - getTime(localVersionPublishTime)
 
   const wanted = {
     version: wantedVersion,

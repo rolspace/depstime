@@ -6,9 +6,8 @@ import * as depstime from './depstime.js'
 import { run } from './index.js'
 
 export default async function cli() {
-  // eslint-disable-next-line prefer-destructuring
   const commandDefinition = yargs(hideBin(process.argv))
-    .command('$0 [directoryPath]', 'Calculate the time differences in your package.json dependencies', (yargs) => {
+    .command('$0 [directoryPath]', 'Calculate the time differences in your package.json dependencies with the wanted/latest versions', (yargs) => {
       yargs.positional('[directoryPath]', {
         describe: 'Path of the directory where the package.json file is located',
         default: '.',
@@ -34,8 +33,7 @@ export default async function cli() {
     .parse()
 
   try {
-    // eslint-disable-next-line prefer-destructuring
-    const [directoryPath] = commandDefinition._
+    const { directoryPath } = commandDefinition
 
     const { readFile } = jsonfile
     const runDependencies = {

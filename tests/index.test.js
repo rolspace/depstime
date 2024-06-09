@@ -124,14 +124,14 @@ describe('index.js', () => {
     createDepstimeStub.onFirstCall().returns(firstCreatedDepstime)
     createDepstimeStub.onSecondCall().returns(secondCreatedDepstime)
 
-    const processDepstimesStub = sinon.stub()
-    processDepstimesStub.onFirstCall().resolves(firstProcessedDepstime)
-    processDepstimesStub.onSecondCall().resolves(secondProcessedDepstime)
+    const processDepstimeStub = sinon.stub()
+    processDepstimeStub.onFirstCall().resolves(firstProcessedDepstime)
+    processDepstimeStub.onSecondCall().resolves(secondProcessedDepstime)
 
     const result = await run(null, null, {
       readPackageFile: readPackageFileFake,
       createDepstime: createDepstimeStub,
-      processDepstimes: processDepstimesStub,
+      processDepstime: processDepstimeStub,
     })
 
     expect(result).to.deep.equal(expected)

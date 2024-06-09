@@ -44,7 +44,7 @@ export default async function cli() {
     const runDependencies = {
       readPackageFile: readFile,
       createDepstime: depstime.create,
-      processDepstimes: depstime.process,
+      processDepstime: depstime.process,
     }
     const result = await run(directoryPath, commandDefinition, runDependencies)
 

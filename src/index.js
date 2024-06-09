@@ -5,7 +5,7 @@ import { maxSatisfying, minSatisfying } from 'semver'
 import { getTime } from './time.js'
 
 export async function run(directoryPath, options, functionDependencies) {
-  const { readPackageFile, createDepstime, processDepstimes } =
+  const { readPackageFile, createDepstime, processDepstime } =
     functionDependencies
 
   const packageJsonPath = path.join(
@@ -38,7 +38,7 @@ export async function run(directoryPath, options, functionDependencies) {
       const useFullTime = options?.f && !options?.c
       const useCompactTime = options?.c && !options?.f
 
-      return processDepstimes(
+      return processDepstime(
         depstime,
         useNpm,
         useFullTime,

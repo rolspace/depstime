@@ -48,25 +48,25 @@ depstime will return the following output:
   dependencies: [{
     { package: 'react',
        local: { version: '^15.6.1' },
-       wanted: { version: '15.6.2', timeDiff: 8899513061 },
-       latest: { version: '16.0.0', timeDiff: 8956517049 } },
+       wanted: { version: '15.6.2', timeDifference: 8899513061 },
+       latest: { version: '16.0.0', timeDifference: 8956517049 } },
     { package: 'whatwg-fetch',
        local: { version: '^2.0.3' },
-       wanted: { version: '2.0.3', timeDiff: 0 },
-       latest: { version: '2.0.3', timeDiff: 0 } },
+       wanted: { version: '2.0.3', timeDifference: 0 },
+       latest: { version: '2.0.3', timeDifference: 0 } },
     { package: 'chai',
        local: { version: '^4.1.1' },
-       wanted: { version: '4.1.2', timeDiff: 2297313699 },
-       latest: { version: '4.1.2', timeDiff: 2297313699 } },
+       wanted: { version: '4.1.2', timeDifference: 2297313699 },
+       latest: { version: '4.1.2', timeDifference: 2297313699 } },
     { package: 'mocha',
        local: { version: '^3.5.2' },
-       wanted: { version: '3.5.3', timeDiff: 86382478 },
-       latest: { version: '4.0.1', timeDiff: 2177353840 } }
+       wanted: { version: '3.5.3', timeDifference: 86382478 },
+       latest: { version: '4.0.1', timeDifference: 2177353840 } }
   }]
 }
 ```
 
-The _time_diff_ property specifies the time difference in milliseconds between the various versions of a package.
+The _timeDifference_ property specifies the time difference in milliseconds between the various versions of a package.
 
 The time difference is calculated by taking the publish time of the locally installed version in package.json (_local_ property) and then, by determining the time differences for the wanted version (_wanted_) and the latest version (_latest_) based on the versioning setup in package.json.
 
@@ -77,7 +77,7 @@ The time difference is calculated by taking the publish time of the locally inst
 `--full, -f`: Converts the output of the time differences into a human readable string. The string shows the full time difference values up to the 'seconds' unit with rounding.
 
 > [!IMPORTANT]
-> Both `-c` and `-f` options cannot be used together, if both are set, the `-c` option will be used.
+> Both `--compact` and `--full` options cannot be used together, if both are set, the `--compact` option takes precedence.
 
 `--yarn, -y`: Uses yarn instead of npm to retrieve dependency info.
 

@@ -21,7 +21,7 @@
     "testWithCoverage": "c8 --reporter lcov --reporter=text mocha ./tests/**"
   },
   "bin": {
-    "depstime": "bin/depstime"
+    "depstime": "bin/depstime.js"
   },
   "files": [
     "src"

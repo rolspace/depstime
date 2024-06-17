@@ -31,7 +31,7 @@ export default async function cli() {
       type: 'boolean',
     })
     .help('help', 'Show help message')
-    .parse()
+    .strict().parse()
 
   try {
     const { directoryPath } = commandDefinition

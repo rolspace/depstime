@@ -78,9 +78,3 @@ The time difference is calculated by taking the publish time of the locally inst
 
 > [!IMPORTANT]
 > Both `--compact` and `--full` options cannot be used together, if both are set, the `--compact` option takes precedence.
-
-`--yarn, -y`: Uses yarn instead of npm to retrieve dependency info.
-
-> [!IMPORTANT]
-> Only Yarn classic 1.x is supported. The command will fail if Yarn 2+ has already been setup inside a folder.
-> The command can be executed if it is run outside the folder where the package.json file is located and the path is added as a parameter to the command.

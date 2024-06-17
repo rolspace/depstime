@@ -74,15 +74,14 @@ export function create(dependencyName, dependencyVersion) {
 
 export async function process(
   depstime,
-  useNpm,
   useFullTime,
   useCompactTime,
   functionDependencies,
 ) {
   const { execute } = functionDependencies
-  const getDependencyCommand = useNpm ? 'npm view' : 'yarn info'
+  const getDependencyCommand = 'npm view'
 
-  const commandResult = await new Promise((resolve, reject) => {
+  const dependencyData = await new Promise((resolve, reject) => {
     const { name } = depstime
     execute(`${getDependencyCommand} ${name} --json`, (error, stdout) => {
       if (error) {
@@ -92,11 +91,6 @@ export async function process(
       resolve(JSON.parse(stdout))
     })
   })
-
-  const npmDependencyData = commandResult
-  const { data: yarnDependencyData } = commandResult
-
-  const dependencyData = useNpm ? npmDependencyData : yarnDependencyData
 
   const depstimeWithDifferences = getVersionsTimeDifferences(
     depstime,

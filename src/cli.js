@@ -18,10 +18,6 @@ export default async function cli() {
         })
       },
     )
-    .option('yarn', {
-      describe: 'use yarn instead of npm',
-      type: 'boolean',
-    })
     .option('compact', {
       alias: 'c',
       describe:

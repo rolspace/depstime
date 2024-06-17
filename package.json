@@ -1,6 +1,6 @@
 {
   "name": "depstime",
-  "version": "1.1.0",
+  "version": "2.0.3",
   "author": "Rolando Ramos",
   "description": "Displays the time differences between the locally installed version of a package, the wanted version on your package.json configuration, and the latest available version.",
   "license": "MIT",

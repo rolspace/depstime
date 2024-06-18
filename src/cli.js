@@ -1,4 +1,5 @@
 import jsonfile from 'jsonfile'
+import { EOL } from 'os'
 import util from 'util'
 import yargs from 'yargs'
 import { hideBin } from 'yargs/helpers'
@@ -31,7 +32,8 @@ export default async function cli() {
       type: 'boolean',
     })
     .help('help', 'Show help message')
-    .strict().parse()
+    .strict()
+    .parse()
 
   try {
     const { directoryPath } = commandDefinition
@@ -45,7 +47,10 @@ export default async function cli() {
     const result = await run(directoryPath, commandDefinition, runDependencies)
 
     console.log(util.inspect(result, { colors: true, depth: null }))
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    const { message } = err
+    console.error(
+      `${EOL}depstime processing failed, error: ${EOL}${message}${EOL}`,
+    )
   }
 }
